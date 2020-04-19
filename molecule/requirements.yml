@@ -2,5 +2,4 @@
 ---
 
 collections:
-- name: mafalb.squid
-- name: mafalb.copr
+- name: mafalb.ansible
