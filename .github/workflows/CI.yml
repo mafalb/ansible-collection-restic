@@ -55,10 +55,9 @@ jobs:
           ref: dev
 
       - name: mv squid
-        if: false
         run: |
           mkdir -p ~/.ansible/collections/ansible_collections/mafalb
-          mv ansible_collections/mafalb/ansible ~/.ansible/collections/ansible_collections/mafalb/
+          mv ansible_collections/mafalb/squid ~/.ansible/collections/ansible_collections/mafalb/
 
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
