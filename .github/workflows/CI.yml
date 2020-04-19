@@ -59,6 +59,9 @@ jobs:
           mkdir -p ~/.ansible/collections/ansible_collections/mafalb
           mv ansible_collections/mafalb/squid ~/.ansible/collections/ansible_collections/mafalb/
 
+      - name: ls
+        run: ls -l
+
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
