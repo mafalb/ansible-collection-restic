@@ -1,0 +1,11 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: Verify
+  hosts: all,!t_proxy
+  tasks:
+  - name: restic is executable
+    command: restic --help
+    changed_when: false
+
+...

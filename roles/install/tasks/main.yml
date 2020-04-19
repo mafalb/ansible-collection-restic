@@ -1,0 +1,15 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: copr repo is enabled
+  command: yum -y copr enable copart/restic
+  args:
+    creates: /etc/yum.repos.d/_copr_copart-restic.repo
+    warn: false
+  when: ansible_pkg_mgr == 'yum' or ansible_pkg_mgr == 'dnf'
+
+- name: restic is installed
+  package:
+    name: restic
+
+...
