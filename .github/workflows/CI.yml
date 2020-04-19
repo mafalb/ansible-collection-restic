@@ -42,19 +42,18 @@ jobs:
     steps:
 
       - name: checkout collection
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           path: ansible_collections/mafalb/mariadb
 
-      - name: checkout collection
-        if: false
+      - name: checkout squid (not yet released on galaxy)
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/mafalb/ansible
-          repository: mafalb/ansible-collection-ansible
+          path: ansible_collections/mafalb/squid
+          repository: mafalb/ansible-collection-squid
           ref: dev
 
-      - name: mv ansible
+      - name: mv squid
         if: false
         run: |
           mkdir -p ~/.ansible/collections/ansible_collections/mafalb
