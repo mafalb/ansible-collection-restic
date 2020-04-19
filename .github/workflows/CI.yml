@@ -10,7 +10,8 @@ on:
     - cron: '40 12 * * 6'
 
 jobs:
-  mariadb-server:
+
+  CI:
 
     runs-on: ubuntu-18.04
 
@@ -44,7 +45,7 @@ jobs:
       - name: checkout collection
         uses: actions/checkout@v2
         with:
-          path: ansible_collections/mafalb/mariadb
+          path: ansible_collections/mafalb/restic
 
       - name: checkout squid (not yet released on galaxy)
         uses: actions/checkout@v2
