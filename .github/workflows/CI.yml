@@ -22,10 +22,18 @@ jobs:
       matrix:
 
         target:
+        - centos6
         - centos7
         - centos8
+        - fedora30
+        - fedora31
+        - fedora32
 
         include:
+
+        - target: centos7
+          image: centos
+          tag: 6
 
         - target: centos7
           image: centos
@@ -34,6 +42,18 @@ jobs:
         - target: centos8
           image: centos
           tag: 8
+
+        - target: fedora30
+          image: fedora
+          tag: 30
+
+        - target: fedora31
+          image: fedora
+          tag: 31
+
+        - target: fedora32
+          image: fedora
+          tag: 32
 
     env:
       CI_CONTAINER_IMAGE: ${{ matrix.image }}

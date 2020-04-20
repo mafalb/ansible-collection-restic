@@ -1,12 +1,6 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: copr repo is enabled
-  include_role:
-    name: mafalb.copr.repo
-  vars:
-    repo: copart/restic
-
 - name: restic is installed
   package:
     name: restic
