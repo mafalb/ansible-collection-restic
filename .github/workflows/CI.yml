@@ -68,6 +68,7 @@ jobs:
           path: ansible_collections/mafalb/restic
 
       - name: checkout squid (not yet released on galaxy)
+        if: false
         uses: actions/checkout@v2
         with:
           path: ansible_collections/mafalb/squid
@@ -75,11 +76,13 @@ jobs:
           ref: dev
 
       - name: mv squid
+        if: false
         run: |
           mkdir -p ~/.ansible/collections/ansible_collections/mafalb
           mv ansible_collections/mafalb/squid ~/.ansible/collections/ansible_collections/mafalb/
 
       - name: checkout copr (not yet released on galaxy)
+        if: false
         uses: actions/checkout@v2
         with:
           path: ansible_collections/mafalb/copr
@@ -87,6 +90,7 @@ jobs:
           ref: dev
 
       - name: mv copr
+        if: false
         run: |
           mkdir -p ~/.ansible/collections/ansible_collections/mafalb
           mv ansible_collections/mafalb/copr ~/.ansible/collections/ansible_collections/mafalb/
