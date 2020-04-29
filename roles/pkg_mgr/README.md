@@ -14,6 +14,8 @@ Provides the dnf/yum/whatever repository for installing restic.
 
 ## Variables
 
+None
+
 ## License
 
 GPLv3
