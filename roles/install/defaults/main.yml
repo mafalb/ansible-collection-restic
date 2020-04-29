@@ -2,10 +2,10 @@
 ---
 
 exclude_global:
-  - /dev
-  - /dev/shm
-  - /proc
-  - /run
-  - /sys
-  - /var/cache/fscache
-  - /var/cache/yum
+- /dev
+- /dev/shm
+- /proc
+- /run
+- /sys
+- /var/cache/fscache
+- /var/cache/yum
