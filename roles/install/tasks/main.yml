@@ -5,4 +5,15 @@
   package:
     name: restic
 
+- name: /etc/restic is present
+  file:
+    path: /etc/restic
+    state: directory
+
+- name: file for global excludes is present
+  template:
+    src: "exclude.global.cfg.j2"
+    dest: /etc/restic/exclude.global.cfg
+    backup: true
+
 ...

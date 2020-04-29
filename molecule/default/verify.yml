@@ -8,4 +8,12 @@
     command: restic --help
     changed_when: false
 
+  - name: init a repository
+    command: restic.ci_generated_password init
+    args:
+      creates: /tmp/ci_generated_password/config
+
+  - name: backup # noqa 301
+    command: restic.ci_generated_password.test
+
 ...

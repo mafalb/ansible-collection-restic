@@ -1,0 +1,4 @@
+#!/bin/bash
+
+restic.{{ repo|mandatory }} backup --exclude-file /etc/restic/exclude.global.cfg --verbose{% for path in paths|mandatory %} {{ path }}{% endfor %}
+

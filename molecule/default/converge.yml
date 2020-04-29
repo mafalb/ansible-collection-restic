@@ -19,11 +19,21 @@
     - ansible_distribution != 'Fedora'
     - ansible_distribution_major_version is not version('6','==')
 
-  - role: mafalb.restic.repo
+  - role: mafalb.restic.pkg_mgr
     when:
     - ansible_os_family == 'RedHat'
     - ansible_distribution != 'Fedora'
 
   - role: mafalb.restic.install
+
+  - role: mafalb.restic.repo
+    repo: ci_generated_password
+    url: /tmp/ci_generated_password
+
+  - role: mafalb.restic.job
+    job: test
+    repo: ci_generated_password
+    paths:
+    - /etc
 
 ...

@@ -1,0 +1,11 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+exclude_global:
+  - /dev
+  - /dev/shm
+  - /proc
+  - /run
+  - /sys
+  - /var/cache/fscache
+  - /var/cache/yum

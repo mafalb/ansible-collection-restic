@@ -1,0 +1,12 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+type: daily cron
+exclude:
+- /dev
+- /dev/shm
+- /proc
+- /run
+- /sys
+- /var/cache/fscache
+- /var/cache/yum
