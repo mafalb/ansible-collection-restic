@@ -32,6 +32,7 @@
   template:
     src: wrapper.sh.j2
     dest: /usr/local/bin/restic.{{ repo }}
+    backup: true
     mode: "0755"
 
 ...

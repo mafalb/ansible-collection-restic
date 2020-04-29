@@ -36,4 +36,11 @@
     paths:
     - /etc
 
+  - role: mafalb.restic.job
+    job: non_default_backup_script
+    repo: ci_generated_password
+    dest: /tmp/restic.non_default_backup_script
+    paths:
+    - /etc
+
 ...

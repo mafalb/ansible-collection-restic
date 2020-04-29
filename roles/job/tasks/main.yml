@@ -1,10 +1,10 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: daily cronjob for job "{{ job }}"
+- name: backup script for job "{{ job }}" is present
   template:
     src: backup.sh.j2
-    dest: /usr/local/bin/restic.{{ repo|mandatory }}.{{ job|mandatory }}
+    dest: "{{ dest|default('/usr/local/bin/restic.' + repo|mandatory + '.' + job|mandatory) }}"
     mode: "0755"
     backup: true
 
