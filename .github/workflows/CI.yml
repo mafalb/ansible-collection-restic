@@ -55,6 +55,18 @@ jobs:
           image: fedora
           tag: 32
 
+        - target: ubuntu16
+          image: ubuntu
+          tag: xenial
+
+        - target: ubuntu18
+          image: ubuntu
+          tag: bionic
+
+        - target: ubuntu20
+          image: ubuntu
+          tag: focal
+
     env:
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
