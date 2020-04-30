@@ -63,6 +63,14 @@ jobs:
           image: ubuntu
           tag: focal
 
+        - target: debian9
+          image: debian
+          tag: stretch
+
+        - target: debian10
+          image: debian
+          tag: buster
+
     env:
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}

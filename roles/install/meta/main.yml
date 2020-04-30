@@ -18,6 +18,14 @@ galaxy_info:
     versions:
     - 30
     - 31
+  - name: Debian
+    versions:
+    - stretch
+    - buster
+  - name: Ubuntu
+    versions:
+    - bionic
+    - focal
 
   galaxy_tags:
   - restic
