@@ -55,10 +55,6 @@ jobs:
           image: fedora
           tag: 32
 
-        - target: ubuntu16
-          image: ubuntu
-          tag: xenial
-
         - target: ubuntu18
           image: ubuntu
           tag: bionic
