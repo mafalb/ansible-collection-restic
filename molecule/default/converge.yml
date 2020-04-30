@@ -9,8 +9,8 @@
 - name: Converge
   hosts: all,!t_proxy
   environment:
-    http_proxy: t_proxy:3128
-    https_proxy: t_proxy:3128
+    http_proxy: http://t_proxy:3128
+    https_proxy: http://t_proxy:3128
   roles:
 
   - role: mafalb.copr.plugin
