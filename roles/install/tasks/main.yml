@@ -3,7 +3,9 @@
 
 - name: restic is installed
   package:
-    name: restic
+    name:
+    - restic
+    - fuse
 
 - name: /etc/restic is present
   file:
