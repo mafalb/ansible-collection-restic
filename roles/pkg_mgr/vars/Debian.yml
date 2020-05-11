@@ -1,0 +1,6 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+restic_repo_uri: https://copr.fedorainfracloud.org/coprs/copart/restic/repo/epel-6/copart-restic-epel-6.repo
+
+...
