@@ -31,7 +31,7 @@ jobs:
 
         include:
 
-        - target: centos7
+        - target: centos6
           image: centos
           tag: 6
 
