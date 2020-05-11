@@ -27,4 +27,7 @@
     file:
       path: /tmp/restic.non_default_backup_script
 
+  - name: fusermount is present
+    file:
+      path: /bin/fusermount
 ...

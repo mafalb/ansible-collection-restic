@@ -1,23 +1,28 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: copr repo for EL6
-  copy:
-    src: copr.repo
-    dest: /etc/yum.repos.d/restic.repo
-    backup: true
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is version('6','==')
+- name: get OS specific variables
+  with_first_found:
+  - "{{ ansible_os_family }}-{{ ansible_distribution_major_version }}.yml"
+  - "{{ ansible_os_family }}.yml"
+  include_vars:
+    file: "{{ item }}"
 
-- name: copr repo for EL7 and later
+# we do not have a copr plugin for EL6
+#
+- name: copr repo when url is defined
   include_role:
     name: mafalb.copr.repo
   vars:
     repo: copart/restic
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is not version('6','==')
-  - ansible_distribution != 'Fedora'
+    copr_repo_uri: "{{ restic_repo_uri }}"
+  when: restic_repo_uri is defined
+
+- name: copr repo for EL
+  include_role:
+    name: mafalb.copr.repo
+  vars:
+    repo: copart/restic
+  when: restic_repo_uri is not defined
 
 ...

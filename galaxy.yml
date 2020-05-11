@@ -19,7 +19,7 @@ tags:
 - backup
 
 dependencies:
-  "mafalb.copr": ">=0.0.2"
+  "mafalb.copr": ">=0.1.0"
 
 repository: https://github.com/mafalb/ansible-collection-restic
 documentation: https://github.com/mafalb/ansible-collection-restic
