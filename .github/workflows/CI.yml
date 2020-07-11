@@ -82,32 +82,6 @@ jobs:
         with:
           path: ansible_collections/mafalb/restic
 
-      - name: checkout squid (not yet released on galaxy)
-        if: false
-        uses: actions/checkout@v2
-        with:
-          path: ansible_collections/mafalb/squid
-          repository: mafalb/ansible-collection-squid
-          ref: dev
-
-      - name: mv squid
-        if: false
-        run: |
-          mkdir -p ~/.ansible/collections/ansible_collections/mafalb
-          mv ansible_collections/mafalb/squid ~/.ansible/collections/ansible_collections/mafalb/
-
-      - name: checkout copr (not yet released on galaxy)
-        uses: actions/checkout@v2
-        with:
-          path: ansible_collections/mafalb/copr
-          repository: mafalb/ansible-collection-copr
-          ref: dev
-
-      - name: mv copr
-        run: |
-          mkdir -p ~/.ansible/collections/ansible_collections/mafalb
-          mv ansible_collections/mafalb/copr ~/.ansible/collections/ansible_collections/mafalb/
-
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
