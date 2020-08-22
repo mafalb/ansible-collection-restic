@@ -19,19 +19,12 @@ galaxy_info:
     versions:
     - 31
     - 32
-  - name: Debian
-    versions:
-    - stretch
-    - buster
-  - name: Ubuntu
-    versions:
-    - bionic
-    - focal
 
   galaxy_tags:
   - restic
-  - repository
-  - repo
+  - pkgmgr
+  - yum
+  - dnf
 
 dependencies: []
 

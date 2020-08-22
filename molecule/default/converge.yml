@@ -6,24 +6,31 @@
   roles:
   - role: mafalb.squid.server
 
-- name: Converge
+- name: Converge restic
   hosts: all,!t_proxy
   environment:
-    http_proxy: t_proxy:3128
-    https_proxy: t_proxy:3128
+    http_proxy: http://t_proxy:3128
+    https_proxy: http://t_proxy:3128
   roles:
 
-  - role: mafalb.copr.plugin
-    when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution != 'Fedora'
-    - ansible_distribution_major_version is not version('6','==')
+  - role: mafalb.restic.pkg_mgr
+  - role: mafalb.restic.install
 
   - role: mafalb.restic.repo
-    when:
-    - ansible_os_family == 'RedHat'
-    - ansible_distribution != 'Fedora'
+    repo: ci_generated_password
+    url: /tmp/ci_generated_password
 
-  - role: mafalb.restic.install
+  - role: mafalb.restic.job
+    job: test
+    repo: ci_generated_password
+    paths:
+    - /etc
+
+  - role: mafalb.restic.job
+    job: non_default_backup_script
+    repo: ci_generated_password
+    dest: /tmp/restic.non_default_backup_script
+    paths:
+    - /etc
 
 ...

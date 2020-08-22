@@ -1,23 +1,40 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: copr repo for EL6
-  copy:
-    src: copr.repo
-    dest: /etc/yum.repos.d/restic.repo
-    backup: true
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is version('6','==')
+- name: create directory for repo "{{ repo|mandatory }}"
+  file:
+    path: /etc/restic.repos.d/{{ repo|mandatory }}
+    state: directory
+    mode: 0755
 
-- name: copr repo for EL7 and later
-  include_role:
-    name: mafalb.copr.repo
-  vars:
-    repo: copart/restic
-  when:
-  - ansible_os_family == 'RedHat'
-  - ansible_distribution_major_version is not version('6','==')
-  - ansible_distribution != 'Fedora'
+- name: create environment file for repo "{{ repo }}"
+  template:
+    src: env.j2
+    dest: /etc/restic.repos.d/{{ repo }}/env
+    backup: true
+    mode: 0644
+
+- name: write password file for repo "{{ repo }}"
+  copy:
+    content: "{{ password }}"
+    dest: /etc/restic.repos.d/{{ repo }}/password
+    backup: true
+    mode: 0440
+  when: repic_repo_password is defined
+
+- name: create a new password for repo "{{ repo }}"
+  copy:
+    content: "{{ lookup('password', '/dev/null') }}"
+    dest: /etc/restic.repos.d/{{ repo }}/password
+    backup: true
+    force: false
+    mode: 0440
+
+- name: wrapper script is present for repo "{{ repo }}"
+  template:
+    src: wrapper.sh.j2
+    dest: /usr/local/bin/restic.{{ repo }}
+    backup: true
+    mode: 0755
 
 ...

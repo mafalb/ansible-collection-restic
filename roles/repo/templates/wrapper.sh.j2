@@ -1,0 +1,5 @@
+#!/bin/bash
+
+. /etc/restic.repos.d/{{ repo|mandatory }}/env
+restic -r {{ url|mandatory }} $@
+

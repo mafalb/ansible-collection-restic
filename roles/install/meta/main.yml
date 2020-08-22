@@ -16,8 +16,16 @@ galaxy_info:
     - 8
   - name: Fedora
     versions:
-    - 30
     - 31
+    - 32
+  - name: Debian
+    versions:
+    - stretch
+    - buster
+  - name: Ubuntu
+    versions:
+    - bionic
+    - focal
 
   galaxy_tags:
   - restic
