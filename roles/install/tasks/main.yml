@@ -11,11 +11,13 @@
   file:
     path: /etc/restic
     state: directory
+    mode: 0755
 
 - name: file for global excludes is present
   template:
     src: "exclude.global.cfg.j2"
     dest: /etc/restic/exclude.global.cfg
     backup: true
+    mode: 0755
 
 ...

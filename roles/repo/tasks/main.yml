@@ -4,20 +4,22 @@
 - name: create directory for repo "{{ repo|mandatory }}"
   file:
     path: /etc/restic.repos.d/{{ repo|mandatory }}
-    recurse: true
+    state: directory
+    mode: 0755
 
 - name: create environment file for repo "{{ repo }}"
   template:
     src: env.j2
     dest: /etc/restic.repos.d/{{ repo }}/env
     backup: true
+    mode: 0644
 
 - name: write password file for repo "{{ repo }}"
   copy:
     content: "{{ password }}"
     dest: /etc/restic.repos.d/{{ repo }}/password
     backup: true
-    mode: "0440"
+    mode: 0440
   when: repic_repo_password is defined
 
 - name: create a new password for repo "{{ repo }}"
@@ -26,13 +28,13 @@
     dest: /etc/restic.repos.d/{{ repo }}/password
     backup: true
     force: false
-    mode: "0440"
+    mode: 0440
 
 - name: wrapper script is present for repo "{{ repo }}"
   template:
     src: wrapper.sh.j2
     dest: /usr/local/bin/restic.{{ repo }}
     backup: true
-    mode: "0755"
+    mode: 0755
 
 ...

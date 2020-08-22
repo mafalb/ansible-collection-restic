@@ -13,7 +13,7 @@ jobs:
 
   CI:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     strategy:
 
@@ -25,7 +25,6 @@ jobs:
         - centos6
         - centos7
         - centos8
-        - fedora30
         - fedora31
         - fedora32
         - ubuntu18
@@ -45,10 +44,6 @@ jobs:
         - target: centos8
           image: centos
           tag: 8
-
-        - target: fedora30
-          image: fedora
-          tag: 30
 
         - target: fedora31
           image: fedora
