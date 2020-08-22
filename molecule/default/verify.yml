@@ -16,18 +16,18 @@
   - name: backup # noqa 301
     command: restic.ci_generated_password.test
 
-  - name: backup script is present
+  - name: backup script is present # noqa 208
     file:
       path: /usr/local/bin/restic.ci_generated_password.test
 
   - name: backup through non default backup script # noqa 301
     command: bash /tmp/restic.non_default_backup_script
 
-  - name: non default backup script is present
+  - name: non default backup script is present # noqa 208
     file:
       path: /tmp/restic.non_default_backup_script
 
-  - name: fusermount is present
+  - name: fusermount is present # noqa 208
     file:
       path: /bin/fusermount
 ...
