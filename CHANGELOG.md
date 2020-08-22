@@ -10,6 +10,7 @@
 
 - a lot of changes and bug fixes to CI
 - explicitly set mode to make ansible-lint happy / CVE-2020-1736
+- a lot of other changes
 
 ### Removed
 
