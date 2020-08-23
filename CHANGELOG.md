@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.0.4
+
+### Changed in CI
+
+- fix internal network definition in molecule
+- do not force molecule 3.0.4 anymore
+
 ## v0.0.3 2020-08-22
 
 ### Added
