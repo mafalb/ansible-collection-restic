@@ -49,9 +49,6 @@ platforms:
 
 provisioner:
   name: ansible
-  playbooks:
-    docker:
-      create: create.yml
   ansible_args:
     - --tags=all,debug
     - --diff
