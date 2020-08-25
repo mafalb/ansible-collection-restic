@@ -2,13 +2,10 @@
 
 ## 0.0.4 2020-08-25
 
-### Added
-
-- backup with --exclude-caches by default
-
 ### Changed
 
 - fix executable bit for global exclude list
+- exclude /selinux
 
 ### Changed in CI
 
