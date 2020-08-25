@@ -11,8 +11,12 @@
     changed_when: false
 
   - name: global exclude file is not executable
-    shell: ls -l /etc/restic/exclude.global.cfg | grep -e '...-..-..-'
+    shell: |
+      set -o pipefail
+      ls -l /etc/restic/exclude.global.cfg | grep -e '...-..-..-'
     changed_when: false
+    args:
+      executable: /bin/bash
 
   - name: init a repository
     command: restic.ci_generated_password init
