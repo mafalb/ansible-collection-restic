@@ -2,6 +2,14 @@
 
 ## 0.0.4
 
+### Added
+
+- backup with --exclude-caches by default
+
+### Changed
+
+- fix executable bit for global exclude list
+
 ### Changed in CI
 
 - fix internal network definition in molecule
