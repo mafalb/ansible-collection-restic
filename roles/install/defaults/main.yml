@@ -6,6 +6,7 @@ exclude_global:
 - /dev/shm
 - /proc
 - /run
+- /selinux
 - /sys
 - /var/cache/fscache
 - /var/cache/yum

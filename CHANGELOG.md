@@ -1,6 +1,11 @@
 # Changelog
 
-## 0.0.4
+## 0.0.4 2020-08-25
+
+### Changed
+
+- fix executable bit for global exclude list
+- exclude /selinux
 
 ### Changed in CI
 
