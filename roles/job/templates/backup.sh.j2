@@ -1,4 +1,4 @@
 #!/bin/bash
 
-/usr/local/bin/restic.{{ repo|mandatory }} backup {% if args is defined %}{{ args }} {% endif %}--exclude-file /etc/restic/exclude.global.cfg{% if exclude is defined %}{% for path in exclude %} --exclude {{ path }} {% endfor %}{% endif %}{% for path in paths|mandatory %} --exclude-caches {{ path }}{% endfor %}
+/usr/local/bin/restic.{{ repo|mandatory }} backup {% if args is defined %}{{ args }} {% endif %}--exclude-file /etc/restic/exclude.global.cfg{% if exclude is defined %}{% for path in exclude %} --exclude {{ path }} {% endfor %}{% endif %}{% for path in paths|mandatory %} {{ path }}{% endfor %}
 
