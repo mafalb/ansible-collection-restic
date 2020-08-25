@@ -3,7 +3,9 @@
 
 - name: Verify
   hosts: all,!t_proxy
+
   tasks:
+
   - name: restic is executable
     command: restic --help
     changed_when: false
@@ -30,4 +32,5 @@
   - name: fusermount is present # noqa 208
     file:
       path: /bin/fusermount
+
 ...
