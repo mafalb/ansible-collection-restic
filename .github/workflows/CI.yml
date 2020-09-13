@@ -70,10 +70,14 @@ jobs:
       CI_CONTAINER_TAG: ${{ matrix.tag }}
       CI_CONTAINER_PRIVILEGED: true
 
+    defaults:
+      run:
+        working-directory: ansible_collections/mafalb/restic
+
     steps:
 
       - name: checkout collection
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
         with:
           path: ansible_collections/mafalb/restic
 
