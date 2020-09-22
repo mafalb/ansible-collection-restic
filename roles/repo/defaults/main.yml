@@ -1,0 +1,6 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+restic_cachedir: /root/.cache/restic
+
+...
