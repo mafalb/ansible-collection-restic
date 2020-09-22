@@ -7,5 +7,6 @@
     dest: "{{ dest|default('/usr/local/bin/restic.' + repo|mandatory + '.' + job|mandatory) }}"
     mode: "0755"
     backup: true
+    validate: bash -n %s
 
 ...

@@ -36,5 +36,6 @@
     dest: /usr/local/bin/restic.{{ repo }}
     backup: true
     mode: 0755
+    validate: bash -n %s
 
 ...
