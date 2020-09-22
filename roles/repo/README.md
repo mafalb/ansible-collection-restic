@@ -33,6 +33,12 @@ url: sftp:sftp.example.com:/path/to/repo
 
 etc... any valid URL to a restic repo is allowed, see the [documentation of restic](https://restic.readthedocs.io/en/latest/030_preparing_a_new_repo.html#)
 
+---
+
+```yaml
+cachedir: /var/cache/restic
+```
+
 ## License
 
 GPLv3

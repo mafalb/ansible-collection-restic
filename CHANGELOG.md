@@ -1,6 +1,12 @@
 # Changelog
 
-## 0.0.5 XXXX-XX-XX
+## 0.1.0 XXXX-XX-XX
+
+### Added
+
+- set cachedir per repo (defaults to /var/cache/restic)
+- more default global exclude paths
+- you can inject additional arguments into the backup job script, e.g. -v
 
 ### Changes to CI
 
