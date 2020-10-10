@@ -31,6 +31,10 @@ jobs:
         - ubuntu20
         - debian10
 
+        ansible_version:
+        - '2.10'
+        - '2.9'
+
         include:
 
         - target: centos6
@@ -69,6 +73,7 @@ jobs:
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
       CI_CONTAINER_PRIVILEGED: true
+      ANSIBLE_VERSION: ${{ matrix.ansible_version }}
 
     defaults:
       run:
@@ -81,11 +86,14 @@ jobs:
         with:
           path: ansible_collections/mafalb/restic
 
+      - name: update apt cache
+        run: sudo apt-get update
+
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
       - name: install molecule
-        run: ansible-playbook -D molecule/install_molecule.yml
+        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }}
 
       - name: run molecule tests
         run: |
