@@ -44,7 +44,7 @@
     - '"^ --exclude /whatever"'
     - '"^ --exclude /mnt/whatever"'
 
-  - name: / is not in excludes 
+  - name: / is not in excludes
     shell: grep -- '--exclude /' /tmp/restic.non_default_backup_script || true
     changed_when: false
 
