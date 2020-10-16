@@ -5,9 +5,8 @@ name: CI
 
 on:
   push:
-  pull_request:
   schedule:
-    - cron: '40 12 * * 6'
+    - cron: '40 11 * * 6'
 
 jobs:
 
@@ -73,7 +72,9 @@ jobs:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
-      CI_CONTAINER_PRIVILEGED: true
+      PY_COLORS: 1
+      ANSIBLE_FORCE_COLOR: 1
+
 
     defaults:
       run:
@@ -89,12 +90,20 @@ jobs:
       - name: install dependencies
         run: ansible-galaxy collection install -r molecule/requirements.yml
 
+      - name: update apt cache
+        run: sudo apt-get update
+
       - name: install molecule
         run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }}
+
+      - name: check ansible version
+        run: |
+          source ~/.virtualenvs/molecule/bin/activate
+          ansible --version | grep "^ansible ${{ matrix.ansible_version }}"
 
       - name: run molecule tests
         run: |
           source ~/.virtualenvs/molecule/bin/activate
-          PY_COLORS=1 CI_CONTAINER_PRIVILEGED=true CI_CONTAINER_IMAGE=$CI_CONTAINER_IMAGE CI_CONTAINER_TAG=$CI_CONTAINER_TAG molecule test
+          molecule test
 
 ...
