@@ -7,6 +7,7 @@
 - set cachedir per repo (defaults to /var/cache/restic)
 - more default global exclude paths
 - you can inject additional arguments into the backup job script, e.g. -v
+- check for / in excludes and remove ignore it silently
 
 ### Changes to CI
 

@@ -37,6 +37,21 @@
     file:
       path: /tmp/restic.non_default_backup_script
 
+  - name: check excludes
+    command: grep -- {{ item }} /tmp/restic.non_default_backup_script
+    changed_when: false
+    loop:
+    - '"^ --exclude /whatever"'
+    - '"^ --exclude /mnt/whatever"'
+
+  - name: / is not in excludes 
+    shell: grep -- '--exclude /' /tmp/restic.non_default_backup_script || true
+    changed_when: false
+
+  - name: 2 excludes are present
+    shell: test $(grep -c -- "--exclude " /tmp/restic.non_default_backup_script) = "2"
+    changed_when: false
+
   - name: fusermount is present # noqa 208
     file:
       path: /bin/fusermount

@@ -32,5 +32,9 @@
     dest: /tmp/restic.non_default_backup_script
     paths:
     - /etc
+    exclude:
+    - /mnt/whatever
+    - /whatever
+    - /
 
 ...
