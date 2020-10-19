@@ -39,6 +39,14 @@ etc... any valid URL to a restic repo is allowed, see the [documentation of rest
 cachedir: /var/cache/restic
 ```
 
+---
+
+```yaml
+restic_repo_state: present
+```
+
+set to absent if you want to remove the repo
+
 ## License
 
 GPLv3

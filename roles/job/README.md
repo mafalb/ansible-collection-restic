@@ -45,6 +45,14 @@ Target file for the backup script
 ---
 
 ```yaml
+restic_job_state: present
+```
+
+set to absent if you want to remove the job
+
+---
+
+```yaml
 paths:
 - list
 - of

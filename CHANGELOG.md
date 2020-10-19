@@ -4,6 +4,7 @@
 
 ### Added
 
+- added an absent state for job and repo
 - set cachedir per repo (defaults to /var/cache/restic)
 - more default global exclude paths
 - you can inject additional arguments into the backup job script, e.g. -v
