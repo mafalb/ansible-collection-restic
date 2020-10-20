@@ -98,8 +98,6 @@ jobs:
 
       - name: install molecule
         run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }}
-<<<<<<< HEAD
-=======
 
       - name: check ansible version
         run: |
@@ -110,7 +108,6 @@ jobs:
         run: |
           source ~/.virtualenvs/molecule/bin/activate
           molecule test
->>>>>>> dev
 
       - name: run molecule uninstall scenario
         run: |
