@@ -1,40 +1,64 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: create directory for repo "{{ repo|mandatory }}"
-  file:
-    path: /etc/restic.repos.d/{{ repo|mandatory }}
-    state: directory
-    mode: 0755
+- block:
 
-- name: create environment file for repo "{{ repo }}"
-  template:
-    src: env.j2
-    dest: /etc/restic.repos.d/{{ repo }}/env
-    backup: true
-    mode: 0644
+  - name: create directory for repo "{{ repo|mandatory }}"
+    file:
+      path: /etc/restic.repos.d/{{ repo|mandatory }}
+      state: directory
+      mode: 0755
 
-- name: write password file for repo "{{ repo }}"
-  copy:
-    content: "{{ password }}"
-    dest: /etc/restic.repos.d/{{ repo }}/password
-    backup: true
-    mode: 0440
-  when: repic_repo_password is defined
+  - name: create environment file for repo "{{ repo }}"
+    template:
+      src: env.j2
+      dest: /etc/restic.repos.d/{{ repo }}/env
+      backup: true
+      mode: 0644
 
-- name: create a new password for repo "{{ repo }}"
-  copy:
-    content: "{{ lookup('password', '/dev/null') }}"
-    dest: /etc/restic.repos.d/{{ repo }}/password
-    backup: true
-    force: false
-    mode: 0440
+  - name: cachedir is present
+    file:
+      path: "{{ cachedir|default(restic_default_cachedir) }}"
+      state: directory
+      mode: 00700
+      owner: root
 
-- name: wrapper script is present for repo "{{ repo }}"
-  template:
-    src: wrapper.sh.j2
-    dest: /usr/local/bin/restic.{{ repo }}
-    backup: true
-    mode: 0755
+  - name: write password file for repo "{{ repo }}"
+    copy:
+      content: "{{ password }}"
+      dest: /etc/restic.repos.d/{{ repo }}/password
+      backup: true
+      mode: 0440
+    when: repic_repo_password is defined
+
+  - name: create a new password for repo "{{ repo }}"
+    copy:
+      content: "{{ lookup('password', '/dev/null') }}"
+      dest: /etc/restic.repos.d/{{ repo }}/password
+      backup: true
+      force: false
+      mode: 0440
+
+  - name: wrapper script is present for repo "{{ repo }}"
+    template:
+      src: wrapper.sh.j2
+      dest: /usr/local/bin/restic.{{ repo }}
+      backup: true
+      mode: 0755
+      validate: bash -n %s
+
+  when: restic_repo_state == 'present'
+
+- block:
+
+  - name: absent
+    file:
+      path: "{{ item }}"
+      state: absent
+    loop:
+    - /usr/local/bin/restic.{{ repo }}
+    - /etc/restic.repos.d/{{ repo }}
+
+  when: restic_repo_state == 'absent'
 
 ...

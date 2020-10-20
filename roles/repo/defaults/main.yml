@@ -1,0 +1,7 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+restic_repo_state: present
+restic_default_cachedir: /var/cache/restic
+
+...

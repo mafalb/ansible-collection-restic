@@ -1,12 +1,20 @@
 # Changelog
 
-## 0.0.5 XXXX-XX-XX
+## 0.1.0 2020-10-20
+
+### Added
+
+- added an absent state for job and repo
+- set cachedir per repo (defaults to /var/cache/restic)
+- more default global exclude paths
+- you can inject additional arguments into the backup job script, e.g. -v
+- check for / in excludes and remove ignore it silently
 
 ### Changes to CI
 
 - use actions/checkout@v2
 - use default working-dir
-- test against ansible 2.9 and 2.10
+- CI against ansible 2.9 and 2.10
 - update apt cache
 
 ## 0.0.4 2020-08-25

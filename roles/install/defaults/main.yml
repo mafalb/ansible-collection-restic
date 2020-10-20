@@ -10,3 +10,6 @@ exclude_global:
 - /sys
 - /var/cache/fscache
 - /var/cache/yum
+- /var/lib/haproxy/dev
+- /var/named/chroot/dev
+- /var/named/chroot/proc

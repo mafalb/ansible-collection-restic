@@ -1,11 +1,27 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: backup script for job "{{ job }}" is present
-  template:
-    src: backup.sh.j2
-    dest: "{{ dest|default('/usr/local/bin/restic.' + repo|mandatory + '.' + job|mandatory) }}"
-    mode: "0755"
-    backup: true
+- name: restic job is present
+  block:
+
+  - name: backup script for job "{{ job }}" is present
+    template:
+      src: backup.sh.j2
+      dest: "{{ dest|default('/usr/local/bin/restic.' + repo|mandatory + '.' + job|mandatory) }}"
+      mode: "0755"
+      backup: true
+      validate: bash -n %s
+
+  when: restic_job_state == 'present'
+
+- name: restic job is absent
+  block:
+
+  - name: backup script for job "{{ job }}" is absent
+    file:
+      path: "{{ dest|default('/usr/local/bin/restic.' + repo|mandatory + '.' + job|mandatory) }}"
+      state: absent
+
+  when: restic_job_state == 'absent'
 
 ...

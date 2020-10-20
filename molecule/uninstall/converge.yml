@@ -1,0 +1,30 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: Converge proxy
+  hosts: t_proxy
+  roles:
+  - role: mafalb.squid.server
+
+- name: uninstall restic job
+  hosts: all,!t_proxy
+
+  roles:
+
+  - role: mafalb.restic.job
+    job: test
+    repo: ci_generated_password
+    restic_job_state: absent
+
+  - role: mafalb.restic.job
+    job: non_default_backup_script
+    dest: /tmp/restic.non_default_backup_script
+    repo: ci_generated_password
+    restic_job_state: absent
+
+  - role: mafalb.restic.repo
+    repo: ci_generated_password
+    url: /tmp/ci_generated_password
+    restic_repo_state: absent
+
+...
