@@ -14,6 +14,7 @@
 
 - use actions/checkout@v2
 - use default working-dir
+- update apt cache
 - CI against ansible 2.9 and 2.10
 - CI against Fedora 33
 
