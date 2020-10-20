@@ -5,6 +5,9 @@ name: CI
 
 on:
   push:
+    tags-ignore:
+    - '*'
+
   schedule:
     - cron: '40 11 * * 6'
 
