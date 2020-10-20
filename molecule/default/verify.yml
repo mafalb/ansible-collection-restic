@@ -56,6 +56,8 @@
     shell: |
       set -o pipefail
       test $(bash -x /tmp/restic.non_default_backup_script 2>&1|grep +|wc -w) = "10"
+    args:
+      executable: /bin/bash
     changed_when: false
 
   - name: fusermount is present # noqa 208
