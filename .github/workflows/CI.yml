@@ -26,6 +26,7 @@ jobs:
         - centos8
         - fedora31
         - fedora32
+        - fedora33
         - ubuntu18
         - ubuntu20
         - debian10
@@ -55,6 +56,10 @@ jobs:
         - target: fedora32
           image: fedora
           tag: 32
+
+        - target: fedora33
+          image: fedora
+          tag: 33
 
         - target: ubuntu18
           image: ubuntu
