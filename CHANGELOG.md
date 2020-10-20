@@ -15,6 +15,7 @@
 - use actions/checkout@v2
 - use default working-dir
 - CI against ansible 2.9 and 2.10
+- CI against Fedora 33
 
 ## 0.0.4 2020-08-25
 
