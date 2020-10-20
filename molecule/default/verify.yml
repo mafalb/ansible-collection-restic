@@ -53,7 +53,10 @@
     changed_when: false
 
   - name: count words in result from templating
-    shell: test $(bash -x /tmp/restic.non_default_backup_script 2>&1|grep +|wc -w) = "10"
+    shell: |
+      set -o pipefail
+      test $(bash -x /tmp/restic.non_default_backup_script 2>&1|grep +|wc -w) = "10"
+    changed_when: false
 
   - name: fusermount is present # noqa 208
     file:
