@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.1.1 XXXX-XX-XX
+
+### Changes
+
+- fix loop warning - set loop_var
+
+### Changes to CI
+
+- do not run when pushing tags
+
 ## 0.1.0 2020-10-20
 
 ### Added
