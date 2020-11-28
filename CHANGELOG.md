@@ -5,6 +5,7 @@
 ### Changes
 
 - fix loop warning - set loop_var
+- Changes to CI
 
 ### Changes to CI
 
