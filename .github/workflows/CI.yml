@@ -107,7 +107,7 @@ jobs:
         run: sudo apt-get update
 
       - name: install molecule
-        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }}
+        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
 
       - name: check ansible version
         run: |
