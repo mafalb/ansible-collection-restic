@@ -53,11 +53,13 @@
 
   - name: absent
     file:
-      path: "{{ item }}"
+      path: "{{ _item }}"
       state: absent
     loop:
     - /usr/local/bin/restic.{{ repo }}
     - /etc/restic.repos.d/{{ repo }}
+    loop_control:
+      loop_var: _item
 
   when: restic_repo_state == 'absent'
 

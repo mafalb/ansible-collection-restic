@@ -1,5 +1,16 @@
 # Changelog
 
+## 0.1.1 2020-12-09
+
+### Changes
+
+- fix loop warning - set loop_var
+
+### Changes to CI
+
+- do not run when pushing tags
+- do not test on CentOS 6 anymore
+
 ## 0.1.0 2020-10-20
 
 ### Added

@@ -5,6 +5,8 @@ name: CI
 
 on:
   push:
+    branches:
+    - '**'
     tags-ignore:
     - '*'
 
@@ -24,7 +26,6 @@ jobs:
       matrix:
 
         target:
-        - centos6
         - centos7
         - centos8
         - fedora31
@@ -39,10 +40,6 @@ jobs:
         - '2.9'
 
         include:
-
-        - target: centos6
-          image: centos
-          tag: 6
 
         - target: centos7
           image: centos
@@ -105,7 +102,7 @@ jobs:
         run: sudo apt-get update
 
       - name: install molecule
-        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }}
+        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
 
       - name: check ansible version
         run: |
