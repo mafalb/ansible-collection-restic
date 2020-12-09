@@ -26,7 +26,6 @@ jobs:
       matrix:
 
         target:
-        - centos6
         - centos7
         - centos8
         - fedora31
@@ -41,10 +40,6 @@ jobs:
         - '2.9'
 
         include:
-
-        - target: centos6
-          image: centos
-          tag: 6
 
         - target: centos7
           image: centos
