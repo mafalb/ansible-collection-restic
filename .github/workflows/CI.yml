@@ -92,14 +92,13 @@ jobs:
         with:
           path: ansible_collections/mafalb/restic
 
-      - name: install system ansible
-        run: sudo apt-get install ansible
-
       - name: get mafalb.ansible
         run: ansible-galaxy collection install mafalb.ansible
 
       - name: install molecule
-        run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
+        run: |
+          sudo apt-get install ansible
+          /usr/bin/ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
 
       - name: check ansible version
         run: |
