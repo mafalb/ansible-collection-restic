@@ -3,6 +3,9 @@
 
 dependency:
   name: galaxy
+  options:
+    role-file: idontexist.yml   # avoid warning while running molecule 
+    requirements-file: molecule/default/requirements.yml
 
 driver:
   name: docker
