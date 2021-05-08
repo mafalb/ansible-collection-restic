@@ -92,14 +92,11 @@ jobs:
         with:
           path: ansible_collections/mafalb/restic
 
-      - name: update apt cache
-        run: sudo apt-get update
+      - name: install system ansible
+        run: sudo apt-get install ansible
 
-      - name: install dependencies
-        run: ansible-galaxy collection install -r molecule/requirements.yml
-
-      - name: update apt cache
-        run: sudo apt-get update
+      - name: get mafalb.ansible
+        run: ansible-galaxy collection install mafalb.ansible
 
       - name: install molecule
         run: ansible-playbook -D molecule/install_molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
