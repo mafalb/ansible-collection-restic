@@ -29,6 +29,7 @@
       dest: /etc/restic.repos.d/{{ repo }}/password
       backup: true
       mode: 0440
+      group: "{{ restic_repo_local_group }}"
     when: repic_repo_password is defined
 
   - name: create a new password for repo "{{ repo }}"
