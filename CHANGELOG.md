@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.0 2021-XX-XX
+
+- add nice and renice option
+- changes in CI
+
 ## 0.1.1 2020-12-09
 
 ### Changes
