@@ -47,6 +47,14 @@ restic_repo_state: present
 
 set to absent if you want to remove the repo
 
+---
+
+```yaml
+restic_nice: ionice -c2 nice -n +19
+```
+
+not set per default. use this if you want to run your jobs with special nice or scheduling
+
 ## License
 
 GPLv3

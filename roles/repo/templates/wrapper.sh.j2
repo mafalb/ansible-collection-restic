@@ -1,5 +1,11 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 . /etc/restic.repos.d/{{ repo|mandatory }}/env
-/usr/bin/restic -r {{ url|mandatory }} $@
 
+if test -z ${RESTIC_NICE}
+then
+	/usr/bin/restic -r {{ url|mandatory }} $@
+else
+	${RESTIC_NICE} /usr/bin/restic -r {{ url|mandatory }} $@
+fi
