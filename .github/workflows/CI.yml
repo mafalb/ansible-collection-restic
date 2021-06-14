@@ -25,21 +25,41 @@ jobs:
 
       matrix:
 
-        target:
-        - centos7
-        - centos8
-        - fedora31
-        - fedora32
-        - fedora33
-        - ubuntu18
-        - ubuntu20
-        - debian10
-
         ansible_version:
+        - '2.11'
         - '2.10'
         - '2.9'
 
+        target:
+        - fedora33
+        - fedora34
+        - c8s
+        - alma8
+        - centos7
+        - centos8
+        - debian10
+        - ubuntu18
+        - ubuntu20
+
         include:
+
+        - target: fedora33
+          image: fedora
+          tag: 33
+
+        - target: fedora34
+          image: fedora
+          tag: 34
+
+        - target: c8s
+          distribution: centos
+          registry: "quay.io/centos/"
+          version: stream8
+
+        - target: alma8
+          distribution: almalinux
+          registry: "docker.io/almalinux/"
+          version: 8
 
         - target: centos7
           image: centos
@@ -49,17 +69,9 @@ jobs:
           image: centos
           tag: 8
 
-        - target: fedora31
-          image: fedora
-          tag: 31
-
-        - target: fedora32
-          image: fedora
-          tag: 32
-
-        - target: fedora33
-          image: fedora
-          tag: 33
+        - target: debian10
+          image: debian
+          tag: buster
 
         - target: ubuntu18
           image: ubuntu
@@ -69,12 +81,9 @@ jobs:
           image: ubuntu
           tag: focal
 
-        - target: debian10
-          image: debian
-          tag: buster
-
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
+      CI_REGISTRY: ${{ matrix.registry }}
       CI_CONTAINER_IMAGE: ${{ matrix.image }}
       CI_CONTAINER_TAG: ${{ matrix.tag }}
       CI_CONTAINER_PRIVILEGED: true
@@ -87,32 +96,38 @@ jobs:
 
     steps:
 
-      - name: checkout collection
-        uses: actions/checkout@v2
-        with:
-          path: ansible_collections/mafalb/restic
+    - name: checkout collection
+      uses: actions/checkout@v2
+      with:
+        path: ansible_collections/mafalb/restic
 
-      - name: get mafalb.ansible
-        run: ansible-galaxy collection install mafalb.ansible
+    # use the github actions ansible
+    #
+    - name: get mafalb.ansible
+      run: ansible-galaxy collection install mafalb.ansible
 
-      - name: install molecule
-        run: |
-          sudo apt-get install ansible
-          /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/playbooks/molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
+    # use the system ansible
+    #
+    - name: install molecule
+      run: |
+        sudo apt-get install ansible
+        /usr/bin/ansible-playbook -D ~/.ansible/collections/ansible_collections/mafalb/ansible/playbooks/molecule.yml -e molecule_ansible_version=${{ matrix.ansible_version }} -t all,debug
 
-      - name: check ansible version
-        run: |
-          source ~/.virtualenvs/molecule/bin/activate
-          ansible --version | grep "^ansible ${{ matrix.ansible_version }}"
+    # use our ansible
+    #
+    - name: check ansible version
+      run: |
+        source ~/.virtualenvs/molecule/bin/activate
+        ansible --version | grep "^ansible ${{ matrix.ansible_version }}"
 
-      - name: run molecule default scenario
-        run: |
-          source ~/.virtualenvs/molecule/bin/activate
-          molecule test
+    - name: run molecule default scenario
+      run: |
+        source ~/.virtualenvs/molecule/bin/activate
+        molecule test
 
-      - name: run molecule uninstall scenario
-        run: |
-          source ~/.virtualenvs/molecule/bin/activate
-          molecule test -s uninstall
+    - name: run molecule uninstall scenario
+      run: |
+        source ~/.virtualenvs/molecule/bin/activate
+        molecule test -s uninstall
 
 ...
