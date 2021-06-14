@@ -7,11 +7,11 @@
   tasks:
 
   - name: repo ci_generated_password is absent
-    shell: "! test -d /etc/restic.repos.d/ci_generated_password"
+    command: "! test -d /etc/restic.repos.d/ci_generated_password"
     changed_when: false
 
   - name: job test is absent
-    shell: "! test -d {{ item }}"
+    command: "! test -d {{ item }}"
     loop:
     - /tmp/restic.non_default_backup_script
     - /usr/local/bin/restic.ci_generated_password.test
