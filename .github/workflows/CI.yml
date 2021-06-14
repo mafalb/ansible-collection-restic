@@ -52,14 +52,14 @@ jobs:
           tag: 34
 
         - target: c8s
-          distribution: centos
+          image: centos
           registry: "quay.io/centos/"
-          version: stream8
+          tag: stream8
 
         - target: alma8
-          distribution: almalinux
+          image: almalinux
           registry: "docker.io/almalinux/"
-          version: 8
+          tag: 8
 
         - target: centos7
           image: centos
