@@ -3,6 +3,5 @@
 
 restic_repo_state: present
 restic_default_cachedir: /var/cache/restic
-restic_repo_local_group: root
 
 ...

@@ -55,6 +55,14 @@ restic_nice: ionice -c2 nice -n +19
 
 not set per default. use this if you want to run your jobs with special nice or scheduling
 
+---
+
+```yaml
+restic_repo_local_group: group
+```
+
+make it possible for members of group to access the repo password file. optional.
+
 ## License
 
 GPLv3
