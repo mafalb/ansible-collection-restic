@@ -38,6 +38,16 @@
     command: grep -- "export RESTIC_NICE=\"ionice -c2 nice -n +19\"" /etc/restic.repos.d/ci_generated_password/env
     changed_when: false
 
+  - name: stat
+    stat:
+      path: /etc/restic.repos.d/ci_generated_password/password
+    register: _group
+    
+  - name: assert that group is set
+    assert:
+      that:
+      - _group.stat.gr_name == 'nobody'
+
   - name: backup through non default backup script # noqa 301
     command: bash /tmp/restic.non_default_backup_script
 
