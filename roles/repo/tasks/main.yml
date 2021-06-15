@@ -32,11 +32,6 @@
     when: repic_repo_password is defined
 
   - name: create a new password for repo "{{ repo }}"
-    file:
-      dest: /etc/restic.repos.d/{{ repo }}/password
-      group: "{{ restic_repo_local_group|default(omit) }}"
-
-  - name: create a new password for repo "{{ repo }}"
     copy:
       content: "{{ lookup('password', '/dev/null') }}"
       dest: /etc/restic.repos.d/{{ repo }}/password
@@ -44,6 +39,11 @@
       backup: true
       force: false
       mode: 0440
+
+  - name: create a new password for repo "{{ repo }}"
+    file:
+      dest: /etc/restic.repos.d/{{ repo }}/password
+      group: "{{ restic_repo_local_group|default(omit) }}"
 
   - name: wrapper script is present for repo "{{ repo }}"
     template:
