@@ -2,7 +2,8 @@
 
 ## 0.2.0 2021-XX-XX
 
-- add nice and renice option
+- add nice and renice option for repos
+- add the possibility to add tags to jobs
 - changes in CI
 
 ## 0.1.1 2020-12-09
