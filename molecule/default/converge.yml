@@ -20,7 +20,7 @@
     repo: ci_generated_password
     url: /tmp/ci_generated_password
     restic_nice: ionice -c2 nice -n +19
-    restic_repo_local_group: nobody
+    restic_repo_local_group: bin
 
   - role: mafalb.restic.job
     job: test

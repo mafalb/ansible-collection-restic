@@ -46,7 +46,7 @@
   - name: assert that group is set
     assert:
       that:
-      - _group.stat.gr_name == 'nobody'
+      - _group.stat.gr_name == 'bin'
 
   - name: backup through non default backup script # noqa 301
     command: bash /tmp/restic.non_default_backup_script
