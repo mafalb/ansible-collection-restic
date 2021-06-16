@@ -35,9 +35,15 @@
     copy:
       content: "{{ lookup('password', '/dev/null') }}"
       dest: /etc/restic.repos.d/{{ repo }}/password
+      group: "{{ restic_repo_local_group|default(omit) }}"
       backup: true
       force: false
       mode: 0440
+
+  - name: create a new password for repo "{{ repo }}"
+    file:
+      dest: /etc/restic.repos.d/{{ repo }}/password
+      group: "{{ restic_repo_local_group|default(omit) }}"
 
   - name: wrapper script is present for repo "{{ repo }}"
     template:

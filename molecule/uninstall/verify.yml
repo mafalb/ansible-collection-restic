@@ -6,11 +6,11 @@
 
   tasks:
 
-  - name: repo ci_generated_password is absent
+  - name: repo ci_generated_password is absent # noqa command-instead-of-shell
     shell: "! test -d /etc/restic.repos.d/ci_generated_password"
     changed_when: false
 
-  - name: job test is absent
+  - name: job test is absent # noqa command-instead-of-shell
     shell: "! test -d {{ item }}"
     loop:
     - /tmp/restic.non_default_backup_script

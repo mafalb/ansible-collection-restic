@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.0 2021-06-16
+
+- add nice and renice option for repos
+- add the possibility to add tags to jobs
+- add the possibility to specify groupship of password file
+- changes in CI
+
 ## 0.1.1 2020-12-09
 
 ### Changes

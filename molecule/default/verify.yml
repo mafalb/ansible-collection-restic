@@ -30,6 +30,24 @@
     file:
       path: /usr/local/bin/restic.ci_generated_password.test
 
+  - name: tags are present
+    command: grep -- '--tag test,etc' /usr/local/bin/restic.ci_generated_password.test
+    changed_when: false
+ 
+  - name: nice is present
+    command: grep -- "^RESTIC_NICE=\"ionice -c2 nice -n +19\"" /usr/local/bin/restic.ci_generated_password.test
+    changed_when: false
+
+  - name: stat
+    stat:
+      path: /etc/restic.repos.d/ci_generated_password/password
+    register: _group
+    
+  - name: assert that group is set
+    assert:
+      that:
+      - _group.stat.gr_name == 'bin'
+
   - name: backup through non default backup script # noqa 301
     command: bash /tmp/restic.non_default_backup_script
 

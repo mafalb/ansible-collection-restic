@@ -19,12 +19,17 @@
   - role: mafalb.restic.repo
     repo: ci_generated_password
     url: /tmp/ci_generated_password
+    restic_repo_local_group: bin
 
   - role: mafalb.restic.job
     job: test
     repo: ci_generated_password
+    restic_nice: ionice -c2 nice -n +19
     paths:
     - /etc
+    restic_tags:
+    - test
+    - etc
 
   - role: mafalb.restic.job
     job: non_default_backup_script

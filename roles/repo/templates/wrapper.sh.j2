@@ -1,5 +1,6 @@
 #!/bin/bash
+# {{ ansible_managed }}
 
 . /etc/restic.repos.d/{{ repo|mandatory }}/env
-/usr/bin/restic -r {{ url|mandatory }} $@
 
+/usr/bin/restic -r {{ url|mandatory }} $@
