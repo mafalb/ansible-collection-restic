@@ -1,6 +1,8 @@
 #!/bin/bash
 # {{ ansible_managed }}
 
+set -o noglob
+
 . /etc/restic.repos.d/{{ repo|mandatory }}/env
 
 /usr/bin/restic -r {{ url|mandatory }} $@
