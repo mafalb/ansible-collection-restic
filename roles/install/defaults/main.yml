@@ -13,3 +13,15 @@ exclude_global:
 - /var/lib/haproxy/dev
 - /var/named/chroot/dev
 - /var/named/chroot/proc
+- /home/*/.local/share/containers
+- /home/*/.local/share/gnome-boxes
+- /home/*/.local/share/Trash
+- /home/*/.vagrant.d/boxes
+- /home/*/VirtualBox VMs/*/*.vmdk
+- /home/*/VirtualBox VMs/*/*.vdi
+- /run/media/*/CentOS-*
+- /run/media/*/ubuntu-*
+- /run/media/*/fedora-*
+- /run/media/*/rhel-*
+
+...
