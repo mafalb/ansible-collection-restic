@@ -35,7 +35,7 @@
     changed_when: false
  
   - name: nice is present
-    command: grep -- "export RESTIC_NICE=\"ionice -c2 nice -n +19\"" /etc/restic.repos.d/ci_generated_password/env
+    command: grep -- "^RESTIC_NICE=\"ionice -c2 nice -n +19\"" /usr/local/bin/restic.ci_generated_password.test
     changed_when: false
 
   - name: stat

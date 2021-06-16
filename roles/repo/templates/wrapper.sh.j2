@@ -3,9 +3,4 @@
 
 . /etc/restic.repos.d/{{ repo|mandatory }}/env
 
-if test -z ${RESTIC_NICE}
-then
-	/usr/bin/restic -r {{ url|mandatory }} $@
-else
-	${RESTIC_NICE} /usr/bin/restic -r {{ url|mandatory }} $@
-fi
+/usr/bin/restic -r {{ url|mandatory }} $@
