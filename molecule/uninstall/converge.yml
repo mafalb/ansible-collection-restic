@@ -2,12 +2,12 @@
 ---
 
 - name: Converge proxy
-  hosts: t_proxy
+  hosts: ci-proxy
   roles:
   - role: mafalb.squid.server
 
 - name: uninstall restic job
-  hosts: all,!t_proxy
+  hosts: all,!ci-proxy
 
   roles:
 

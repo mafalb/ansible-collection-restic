@@ -2,7 +2,7 @@
 ---
 
 - name: Verify
-  hosts: all,!t_proxy
+  hosts: all,!ci-proxy
 
   tasks:
 
