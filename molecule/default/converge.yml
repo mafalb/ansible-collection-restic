@@ -2,15 +2,15 @@
 ---
 
 - name: Converge proxy
-  hosts: t_proxy
+  hosts: ci-proxy
   roles:
   - role: mafalb.squid.server
 
 - name: Converge restic
-  hosts: all,!t_proxy
+  hosts: all,!ci-proxy
   environment:
-    http_proxy: http://t_proxy:3128
-    https_proxy: http://t_proxy:3128
+    http_proxy: http://ci-proxy:3128
+    https_proxy: http://ci-proxy:3128
   roles:
 
   - role: mafalb.restic.pkg_mgr

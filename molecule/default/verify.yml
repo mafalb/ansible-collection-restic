@@ -2,7 +2,7 @@
 ---
 
 - name: Verify
-  hosts: all,!t_proxy
+  hosts: all,!ci-proxy
 
   tasks:
 
@@ -35,7 +35,7 @@
     changed_when: false
  
   - name: nice is present
-    command: grep -- "^"ionice -c2 nice -n +19" /usr/local/bin/restic.ci_generated_password.test
+    command: grep -- "^ionice -c2 nice -n +19" /usr/local/bin/restic.ci_generated_password.test
     changed_when: false
 
   - name: stat
@@ -73,7 +73,7 @@
   - name: count words in result from templating
     shell: |
       set -o pipefail
-      test $(bash -x /tmp/restic.non_default_backup_script 2>&1|grep +|wc -w) = "10"
+      test $(bash -x /tmp/restic.non_default_backup_script 2>&1|grep +\ /usr|wc -w) = "10"
     args:
       executable: /bin/bash
     changed_when: false
