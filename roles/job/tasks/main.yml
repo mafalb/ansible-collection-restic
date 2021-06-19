@@ -1,17 +1,6 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: directory for mafalb-shellscripts is present
-  file:
-    path: /usr/local/lib/mafalb-shellscripts
-    state: directory
-
-- name: lib.sh is present
-  template:
-    src: lib.sh.j2
-    dest: /usr/local/lib/mafalb-shellscripts/lib.sh
-    force: false
-
 - name: restic job is present
   block:
 
