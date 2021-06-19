@@ -6,7 +6,7 @@ set -o noglob
 #
 {% if restic_extra_script is defined -%}
 . {{ restic_extra_script }}
-{% endif -%}
+{% endif %}
 
 {% if restic_nice is defined -%}{{ restic_nice }} {% endif -%}/usr/local/bin/restic.{{ repo|mandatory }} backup $@ {% if args is defined %}{{ args }} {% endif %}{% if restic_tags is defined %}--tag {{ restic_tags|join(',') }} {% endif %}--exclude-file /etc/restic/exclude.global.cfg{% if exclude is defined %}{% for path in exclude %}{% if path != '/' %}\
  --exclude {{ path }}{% endif %}{% endfor %}{% endif %}\
