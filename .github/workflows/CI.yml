@@ -38,7 +38,7 @@ jobs:
         - rocky8
         - centos7
         - centos8
-        - debian9
+        #- debian9
         - debian10
         - ubuntu16
         - ubuntu18
@@ -67,8 +67,8 @@ jobs:
         - target: centos8
           image: quay.io/centos/centos:8
 
-        - target: debian9
-          image: docker.io/debian:stretch
+        #- target: debian9
+        #  image: docker.io/debian:stretch
 
         - target: debian10
           image: docker.io/debian:buster
