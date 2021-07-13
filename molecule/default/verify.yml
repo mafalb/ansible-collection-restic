@@ -26,6 +26,14 @@
   - name: backup # noqa 301
     command: restic.ci_generated_password.test
 
+  - name: a key is set
+    shell: |
+      set -o pipefail
+      /usr/local/bin/restic.ci_generated_password key list | grep "^\*"
+    changed_when: false
+    args:
+      executable: /bin/bash
+
   - name: backup script is present # noqa 208
     file:
       path: /usr/local/bin/restic.ci_generated_password.test
