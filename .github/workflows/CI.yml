@@ -35,9 +35,12 @@ jobs:
         - fedora34
         - c8s
         - alma8
+        - rocky8
         - centos7
         - centos8
+        - debian9
         - debian10
+        - ubuntu16
         - ubuntu18
         - ubuntu20
 
