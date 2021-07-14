@@ -16,14 +16,15 @@ galaxy_info:
     - 8
   - name: Fedora
     versions:
-    - 31
-    - 32
+    - 33
+    - 34
   - name: Debian
     versions:
     - stretch
     - buster
   - name: Ubuntu
     versions:
+    - xenial
     - bionic
     - focal
 

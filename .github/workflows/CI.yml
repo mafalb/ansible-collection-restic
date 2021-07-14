@@ -26,67 +26,66 @@ jobs:
       matrix:
 
         ansible_version:
-        - '2.11'
-        - '2.10'
         - '2.9'
+        - '2.10'
+        - '2.11'
 
         target:
         - fedora33
         - fedora34
         - c8s
         - alma8
+        - rocky8
         - centos7
         - centos8
+        - debian9
         - debian10
+        - ubuntu16
         - ubuntu18
         - ubuntu20
 
         include:
 
         - target: fedora33
-          image: fedora
-          tag: 33
+          image: docker.io/fedora:33
 
         - target: fedora34
-          image: fedora
-          tag: 34
+          image: docker.io/fedora:34
 
         - target: c8s
-          image: centos
-          registry: "quay.io/centos/"
-          tag: stream8
+          image: quay.io/centos/centos:stream8
 
         - target: alma8
-          image: almalinux
-          registry: "docker.io/almalinux/"
-          tag: 8
+          image: quay.io/almalinux/almalinux:8
+
+        - target: rocky8
+          image: quay.io/rockylinux/rockylinux:8
 
         - target: centos7
-          image: centos
-          tag: 7
+          image: quay.io/centos/centos:7
 
         - target: centos8
-          image: centos
-          tag: 8
+          image: quay.io/centos/centos:8
+
+        - target: debian9
+          image: docker.io/debian:stretch
 
         - target: debian10
-          image: debian
-          tag: buster
+          image: docker.io/debian:buster
+
+        - target: ubuntu16
+          image: docker.io/ubuntu:bionic
 
         - target: ubuntu18
-          image: ubuntu
-          tag: bionic
+          image: docker.io/ubuntu:bionic
 
         - target: ubuntu20
-          image: ubuntu
-          tag: focal
+          image: docker.io/ubuntu:focal
 
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
-      CI_REGISTRY: ${{ matrix.registry }}
-      CI_CONTAINER_IMAGE: ${{ matrix.image }}
-      CI_CONTAINER_TAG: ${{ matrix.tag }}
-      CI_CONTAINER_PRIVILEGED: true
+      CI_IMAGE: ${{ matrix.image }}
+      CI_HOSTNAME: ci-${{ matrix.target }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
 

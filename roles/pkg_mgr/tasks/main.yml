@@ -28,7 +28,7 @@
     when: restic_repo_uri is not defined
 
   when:
-  - ansible_os_family == 'RedHat'
+  - ansible_os_family in ['RedHat', 'Rocky']
   - ansible_distribution != 'Fedora'
 
 ...
