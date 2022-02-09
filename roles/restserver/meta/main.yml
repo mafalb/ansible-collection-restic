@@ -16,7 +16,7 @@ galaxy_info:
 
   galaxy_tags:
   - restic
-  - rest_server
+  - restserver
 
 dependencies: []
 

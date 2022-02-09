@@ -1,0 +1,20 @@
+# Copyright (c) 2021 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+---
+
+- name: Set up proxy
+  hosts: proxy_group
+
+  pre_tasks:
+    # https://github.com/geerlingguy/ansible-role-composer/issues/54
+    #
+    - name: get status of systemd-tmpfiles-setup.service # noqa 303
+      command: systemctl status systemd-tmpfiles-setup.service
+      when: ansible_service_mgr == 'systemd'
+      changed_when: false
+
+  roles:
+    - name: mafalb.squid.server
+
+...

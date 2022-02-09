@@ -4,7 +4,7 @@
 dependency:
   name: galaxy
   options:
-    role-file: idontexist.yml   # avoid warning while running molecule 
+    role-file: idontexist.yml   # avoid warning while running molecule
     requirements-file: molecule/default/requirements.yml
 
 driver:
@@ -19,7 +19,7 @@ lint: |
 
 platforms:
 
-- name: ${CI_HOSTNAME-ci-rocky8}
+- name: ${CI_HOSTNAME:-ci-rocky8}
   image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
   network_mode: bridge
   docker_networks:
@@ -29,9 +29,11 @@ platforms:
   - name: molecule-internal
   devices:
   - /dev/fuse:/dev/fuse:rwm
+  groups:
+    - ci_group
 
 - name: ci-proxy
-  image: quay.io/centos/centos:8
+  image: quay.io/rockylinux/rockylinux:8
   command: /lib/systemd/systemd
   dockerfile: Dockerfile-systemd.j2
   network_mode: bridge
@@ -50,6 +52,8 @@ platforms:
   - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  groups:
+    - proxy_group
 
 provisioner:
   name: ansible

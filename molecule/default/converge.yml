@@ -1,16 +1,12 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: Converge proxy
-  hosts: ci-proxy
-  roles:
-  - role: mafalb.squid.server
-
 - name: Converge restic
-  hosts: all,!ci-proxy
+  hosts: ci_group
   environment:
     http_proxy: http://ci-proxy:3128
     https_proxy: http://ci-proxy:3128
+
   roles:
 
   - role: mafalb.restic.pkg_mgr

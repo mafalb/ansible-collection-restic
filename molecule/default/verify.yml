@@ -41,7 +41,7 @@
   - name: tags are present
     command: grep -- '--tag test,etc' /usr/local/bin/restic.ci_generated_password.test
     changed_when: false
- 
+
   - name: nice is present
     command: grep -- "^ionice -c2 nice -n +19" /usr/local/bin/restic.ci_generated_password.test
     changed_when: false
@@ -50,7 +50,7 @@
     stat:
       path: /etc/restic.repos.d/ci_generated_password/password
     register: _group
-    
+
   - name: assert that group is set
     assert:
       that:
