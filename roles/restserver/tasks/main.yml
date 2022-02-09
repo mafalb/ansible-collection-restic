@@ -1,0 +1,21 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: rest-server is present
+  package:
+    name: rest-server
+
+- name: set options
+  lineinfile:
+    path: /etc/sysconfig/rest-server
+    regexp: '^OPTIONS='
+    line: "OPTIONS={{ options|join(' ') }}"
+  when: options is defined
+
+- name: rest-server is started
+  service:
+    name: rest-server
+    state: enabled
+    enabled: true
+
+...

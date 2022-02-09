@@ -1,0 +1,30 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: install rest-server
+  hosts: ci_group
+  roles:
+  roles:
+    - role: mafalb.copr.plugin
+    - role: mafalb.copr.repo
+      repo: jeremythecat/restic
+    - role: mafalb.restic.restserver
+      options:
+        - --append-only
+        - --private-repos
+    - role: mafalb.restic.job
+      job: rest_server_job
+      repo: rest_server_repo
+    - role: mafalb.restic.repo
+      repo: rest_server_repo
+      url: rest:http://testuser:testpass1@localhost:8000/testuser/rest_server_repo
+  tasks:
+    - name: htpasswd is present
+      htpasswd:
+        name: testuser
+        password: testpass1
+        path: /var/lib/rest-server/htpasswd
+        mode: '0640'
+        group: restic
+        
+...

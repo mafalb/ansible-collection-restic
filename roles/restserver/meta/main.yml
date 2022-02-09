@@ -1,0 +1,23 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+galaxy_info:
+  author: Markus Falb <markus.falb@mafalb.at>
+  description: Ansible role restic.restserver
+  license: GPLv3
+  min_ansible_version: 2.9
+
+  # https://galaxy.ansible.com/api/v1/platforms/
+  #
+  platforms:
+  - name: Fedora
+    versions:
+    - 36
+
+  galaxy_tags:
+  - restic
+  - rest_server
+
+dependencies: []
+
+...
