@@ -20,7 +20,7 @@ lint: |
 platforms:
 
 - name: ${CI_HOSTNAME:-ci-rocky8}
-  image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
+  image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
   network_mode: bridge
   docker_networks:
   - name: molecule-internal
