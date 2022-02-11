@@ -8,7 +8,7 @@ dependency:
     requirements-file: molecule/default/requirements.yml
 
 driver:
-  name: docker
+  name: ${CI_DRIVER:-podman}
 
 lint: |
   set -e

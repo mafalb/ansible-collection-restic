@@ -50,6 +50,7 @@ jobs:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       PY_COLORS: 1
       ANSIBLE_FORCE_COLOR: 1
+      CI_DRIVER: docker
 
     defaults:
       run:
