@@ -35,7 +35,6 @@ platforms:
 - name: ci-proxy
   image: quay.io/rockylinux/rockylinux:8
   command: /lib/systemd/systemd
-  dockerfile: Dockerfile-systemd.j2
   network_mode: bridge
   docker_networks:
   - name: molecule-internal
