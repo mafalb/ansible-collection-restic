@@ -19,11 +19,11 @@
       repo: rest_server_repo
     - role: mafalb.restic.repo
       repo: rest_server_repo
-      url: rest:http://testuser:testpass1@localhost:8000/testuser/rest_server_repo
+      url: rest:http://rest_server_repo:testpass1@localhost:8000/rest_server_repo
   tasks:
     - name: htpasswd is present
       htpasswd:
-        name: testuser
+        name: rest_server_repo
         password: testpass1
         path: /var/lib/rest-server/htpasswd
         mode: '640'
