@@ -15,7 +15,7 @@
 - name: rest-server is started
   service:
     name: rest-server
-    state: enabled
+    state: started
     enabled: true
 
 ...
