@@ -6,6 +6,10 @@
   environment:
     http_proxy: http://ci-proxy:3128
     https_proxy: http://ci-proxy:3128
+  pre_tasks:
+    - name: dependencies are present
+      package:
+        name: python3-passlib  # for htpasswd
   roles:
     - role: mafalb.copr.plugin
     - role: mafalb.copr.repo
@@ -17,6 +21,8 @@
     - role: mafalb.restic.job
       job: rest_server_job
       repo: rest_server_repo
+      paths:
+        - /etc
     - role: mafalb.restic.repo
       repo: rest_server_repo
       url: rest:http://rest_server_repo:testpass1@localhost:8000/rest_server_repo

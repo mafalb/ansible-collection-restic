@@ -9,7 +9,7 @@
   lineinfile:
     path: /etc/sysconfig/rest-server
     regexp: '^OPTIONS='
-    line: "OPTIONS={{ options|join(' ') }}"
+    line: 'OPTIONS="{{ options|join(' ') }}"'
   when: options is defined
 
 - name: rest-server is started
