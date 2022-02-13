@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.0 2021-07-14
+
+- support for Rocky 8
+- support for Debian 9
+
 ## 0.2.0 2021-06-16
 
 - add nice and renice option for repos

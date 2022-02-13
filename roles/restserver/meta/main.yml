@@ -3,35 +3,20 @@
 
 galaxy_info:
   author: Markus Falb <markus.falb@mafalb.at>
-  description: Ansible role repo
+  description: Ansible role restic.restserver
   license: GPLv3
   min_ansible_version: 2.9
 
   # https://galaxy.ansible.com/api/v1/platforms/
   #
   platforms:
-  - name: EL
-    versions:
-    - 7
-    - 8
   - name: Fedora
     versions:
-    - 33
-    - 34
-  - name: Debian
-    versions:
-    - stretch
-    - buster
-  - name: Ubuntu
-    versions:
-    - xenial
-    - bionic
-    - focal
+    - 36
 
   galaxy_tags:
   - restic
-  - repository
-  - repo
+  - restserver
 
 dependencies: []
 

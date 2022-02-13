@@ -4,11 +4,11 @@
 dependency:
   name: galaxy
   options:
-    role-file: idontexist.yml   # avoid warning while running molecule 
+    role-file: idontexist.yml   # avoid warning while running molecule
     requirements-file: molecule/default/requirements.yml
 
 driver:
-  name: docker
+  name: ${CI_DRIVER:-podman}
 
 lint: |
   set -e
@@ -19,25 +19,38 @@ lint: |
 
 platforms:
 
-- name: ${CI_HOSTNAME-ci-rocky8}
-  image: ${CI_IMAGE:-"quay.io/rockylinux/rockylinux:8"}
+- name: ${CI_HOSTNAME:-ci-rocky8}
+  image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
+  command: /lib/systemd/systemd
   network_mode: bridge
   docker_networks:
-  - name: molecule-internal
-    internal: true
+    - name: molecule-internal
+      internal: true
   networks:
-  - name: molecule-internal
+    - name: molecule-internal
   devices:
-  - /dev/fuse:/dev/fuse:rwm
+    - /dev/fuse:/dev/fuse:rwm
+  volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+    - /run
+    - /run/lock
+    - /tmp
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  groups:
+    - ci_group
 
 - name: ci-proxy
-  image: quay.io/centos/centos:8
+  image: quay.io/rockylinux/rockylinux:8
   command: /lib/systemd/systemd
-  dockerfile: Dockerfile-systemd.j2
   network_mode: bridge
   docker_networks:
   - name: molecule-internal
     internal: true
+  - name: moldecule-external
   networks:
   - name: molecule-external
   - name: molecule-internal
@@ -50,6 +63,8 @@ platforms:
   - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  groups:
+    - proxy_group
 
 provisioner:
   name: ansible

@@ -36,7 +36,8 @@
       dest: /etc/restic.repos.d/{{ repo }}/password
       backup: true
       mode: 0440
-    when: repic_repo_password is defined
+      force: false
+    when: password is defined
 
   - name: create a new password for repo "{{ repo }}"
     copy:
@@ -45,12 +46,14 @@
       group: "{{ restic_repo_local_group|default(omit) }}"
       backup: true
       force: false
-      mode: 0440
+      mode: '440'
 
+  # mode and ownership maybe wrong
   - name: create a new password for repo "{{ repo }}"
     file:
       dest: /etc/restic.repos.d/{{ repo }}/password
       group: "{{ restic_repo_local_group|default(omit) }}"
+      mode: '440'
 
   - name: wrapper script is present for repo "{{ repo }}"
     template:

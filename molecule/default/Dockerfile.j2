@@ -1,17 +1,14 @@
 
+
 {% if item.registry is defined %}
 FROM {{ item.registry.url }}/{{ item.image }}
 {% else %}
 FROM {{ item.image }}
 {% endif %}
 
-{% if item.image == 'centos:7' %}
-ENV LANG en_US.UTF-8
-ENV LC_ALL en_US.UTF-8
-{% else %}
-ENV LC_ALL C.UTF-8
-ENV LC_ALL C.UTF-8
-{% endif %}
+STOPSIGNAL SIGRTMIN+3
+
+ENV container docker
 
 {% if item.env is defined %}
 {% for var, value in item.env.items() %}
@@ -21,10 +18,25 @@ ENV {{ var }} {{ value }}
 {% endfor %}
 {% endif %}
 
-RUN if [ $(command -v apt-get) ]; then apt-get update && apt-get install -y python3 sudo bash ca-certificates iproute2 && apt-get clean; \
-    elif [ $(command -v dnf) ]; then dnf makecache && dnf --assumeyes install python3 sudo python3-devel python*-dnf bash iproute && dnf clean all; \
-    elif [ $(command -v yum) ]; then yum makecache fast && yum install -y python sudo yum-plugin-ovl bash iproute && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf && yum clean all; \
-    elif [ $(command -v zypper) ]; then zypper refresh && zypper install -y python sudo bash python-xml iproute2 && zypper clean -a; \
-    elif [ $(command -v apk) ]; then apk update && apk add --no-cache python sudo bash ca-certificates; \
-    elif [ $(command -v xbps-install) ]; then xbps-install -Syu && xbps-install -y python sudo bash ca-certificates iproute2 && xbps-remove -O; fi
+RUN if [ $(command -v apt-get) ]; then apt-get update && apt-get install -y python3 python3-apt sudo systemd ;\
+    elif [ $(command -v dnf) ]; then if test -d /var/lib/rpm; then touch /var/lib/rpm/*; dnf makecache; fi; dnf --assumeyes install python3 sudo which systemd iproute;\
+    elif [ $(command -v microdnf) ]; then touch /var/lib/rpm/* && microdnf install python3 sudo which systemd iproute yum && touch /etc/yum/vars/ociregion;\
+    elif [ $(command -v yum) ]; then yum makecache fast && yum install -y python sudo which yum-plugin-ovl iproute && sed -i 's/plugins=0/plugins=1/g' /etc/yum.conf; \
+    elif [ $(command -v pacman) ]; then pacman -Sy && pacman --noconfirm -Sq core/python core/iproute2 core/sudo core/which core/systemd;\
+    fi
+
+RUN if test -d /lib/systemd/system/sysinit.target.wants/ ; then (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == systemd-tmpfiles-setup.service ] || rm -f $i; done);\
+ rm -f /lib/systemd/system/multi-user.target.wants/*;\
+ rm -f /etc/systemd/system/*.wants/*;\
+ rm -f /lib/systemd/system/local-fs.target.wants/*;\
+ rm -f /lib/systemd/system/sockets.target.wants/*udev*;\
+ rm -f /lib/systemd/system/sockets.target.wants/*initctl*;\
+ rm -f /lib/systemd/system/basic.target.wants/*;\
+ rm -f /lib/systemd/system/anaconda.target.wants/*;\
+fi
+
+RUN if test -d /lib/systemd/system/sysinit.target.wants/ ; then ln -s /lib/systemd/system/systemd-user-sessions.service /lib/systemd/system/multi-user.target.wants/; fi
+
+VOLUME [ "/sys/fs/cgroup" ]
+CMD ["/lib/systemd/systemd"]
 
