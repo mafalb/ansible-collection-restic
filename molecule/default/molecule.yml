@@ -24,19 +24,20 @@ platforms:
   command: /lib/systemd/systemd
   network_mode: bridge
   docker_networks:
-  - name: molecule-internal
-    internal: true
+    - name: molecule-internal
+      internal: true
   networks:
-  - name: molecule-internal
+    - name: molecule-internal
   devices:
-  - /dev/fuse:/dev/fuse:rwm
+    - /dev/fuse:/dev/fuse:rwm
   volumes:
-  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
   tmpfs:
-  - /run
-  - /tmp
+    - /run
+    - /run/lock
+    - /tmp
   capabilities:
-  - SYS_ADMIN
+    - SYS_ADMIN
   privileged: ${CI_CONTAINER_PRIVILEGED:-false}
   pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   groups:
@@ -49,6 +50,7 @@ platforms:
   docker_networks:
   - name: molecule-internal
     internal: true
+  - name: moldecule-external
   networks:
   - name: molecule-external
   - name: molecule-internal
