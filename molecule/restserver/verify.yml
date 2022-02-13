@@ -9,7 +9,7 @@
   - name: restic is present
     package:
       name: restic
- 
+
   - name: restic is executable
     command: restic --help
     changed_when: false
