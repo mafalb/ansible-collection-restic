@@ -28,7 +28,8 @@
       creates: /var/lib/rest-server/restrepo/config
 
   - name: backup # noqa 301
-    command: /tmp/restic.restjob
+    command: bash /tmp/restic.restjob
+    changed_when: false
 
   - name: a key is set
     shell: |
@@ -61,7 +62,8 @@
       - _group.stat.gr_name == 'bin'
 
   - name: backup through non default backup script # noqa 301
-    command: bash /tmp/restjob
+    command: bash /tmp/restic.restjob
+    changed_when: false
 
   - name: non default backup script is present # noqa 208
     file:
