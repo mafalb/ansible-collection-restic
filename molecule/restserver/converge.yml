@@ -9,8 +9,11 @@
   pre_tasks:
     - name: dependencies are present
       package:
-        name: python3-passlib  # for htpasswd
+        name:
+          - python3-passlib  # for htpasswd
   roles:
+    - role: mafalb.restic.pkg_mgr
+    - role: mafalb.restic.install
     - role: mafalb.copr.plugin
     - role: mafalb.copr.repo
       repo: jeremythecat/restic
@@ -19,20 +22,34 @@
         - --append-only
         - --private-repos
     - role: mafalb.restic.job
-      job: rest_server_job
-      repo: rest_server_repo
+      job: restjob
+      repo: restrepo
       paths:
         - /etc
+      dest: /tmp/restic.restjob
+      restic_tags:
+        - test
+        - etc
+      restic_nice: ionice -c2 nice -n +19
+      exclude:
+      - /mnt/whatever
+      - /whatever
     - role: mafalb.restic.repo
-      repo: rest_server_repo
-      url: rest:http://rest_server_repo:testpass1@localhost:8000/rest_server_repo
+      repo: restrepo
+      url: rest:http://restrepo:testpass1@localhost:8000/restrepo
+      password: testpass1
+      restic_repo_local_group: bin
   tasks:
     - name: htpasswd is present
+      file:
+        path: /var/lib/rest-server/.htpasswd
+    - name: htpasswd is present
       htpasswd:
-        name: rest_server_repo
+        name: restrepo
         password: testpass1
-        path: /var/lib/rest-server/htpasswd
+        crypt_scheme: bcrypt
+        path: /var/lib/rest-server/.htpasswd
         mode: '640'
-        group: restic
+        group: rest-server
 
 ...
