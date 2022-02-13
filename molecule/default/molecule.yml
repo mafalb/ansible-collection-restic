@@ -21,6 +21,7 @@ platforms:
 
 - name: ${CI_HOSTNAME:-ci-rocky8}
   image: ${CI_IMAGE:-quay.io/rockylinux/rockylinux:8}
+  command: /lib/systemd/systemd
   network_mode: bridge
   docker_networks:
   - name: molecule-internal
@@ -29,6 +30,15 @@ platforms:
   - name: molecule-internal
   devices:
   - /dev/fuse:/dev/fuse:rwm
+  volumes:
+  - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+  - /run
+  - /tmp
+  capabilities:
+  - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
   groups:
     - ci_group
 
