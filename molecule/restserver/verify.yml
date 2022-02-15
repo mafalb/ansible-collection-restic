@@ -1,95 +1,49 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: Verify
-  hosts: ci_group
+- import_playbook: verify_local_restserver.yml
+  when:
+    - lookup('env','HAS_RESTSERVER')|bool
+
+# we need to run tasks on server
+- hosts: server_group
+  tasks: []
+
+- name: verify remote rest-server
+  hosts: client_group
 
   tasks:
 
-  - name: restic is present
-    package:
-      name: restic
+    - name: backup script is present # noqa 208
+      file:
+        path: /usr/local/bin/restic.remoterestrepo1.remoterestjob1
 
-  - name: restic is executable
-    command: restic --help
-    changed_when: false
+    - name: stat repo config
+      delegate_to: "{{ groups['server_group'][0] }}"
+      stat:
+        path: /var/lib/rest-server/remoterestrepo1/config
 
-  - name: global exclude file is not executable
-    shell: |
-      set -o pipefail
-      ls -l /etc/restic/exclude.global.cfg | grep -e '...-..-..-'
-    changed_when: false
-    args:
-      executable: /bin/bash
+      register: _remoterestrepo1_config
+    - name: init a repository
+      command: /usr/local/bin/restic.remoterestrepo1 init
+      when: not _remoterestrepo1_config.stat.exists|bool
 
-  - name: init a repository
-    command: /usr/local/bin/restic.restrepo init
-    args:
-      creates: /var/lib/rest-server/restrepo/config
+    - name: a key is set
+      shell: |
+        set -o pipefail
+        /usr/local/bin/restic.remoterestrepo1 key list | grep "^\*"
+      changed_when: false
+      args:
+        executable: /bin/bash
 
-  - name: backup # noqa 301
-    command: bash /tmp/restic.restjob
-    changed_when: false
+    - name: backup  # noqa 301
+      command: /usr/local/bin/restic.remoterestrepo1.remoterestjob1
 
-  - name: a key is set
-    shell: |
-      set -o pipefail
-      /usr/local/bin/restic.restrepo key list | grep "^\*"
-    changed_when: false
-    args:
-      executable: /bin/bash
+    - name: restore  # noqa 301
+      command: /usr/local/bin/restic.remoterestrepo1 restore --include /etc/hosts --target /tmp latest
 
-  - name: backup script is present # noqa 208
-    file:
-      path: /tmp/restic.restjob
-
-  - name: tags are present
-    command: grep -- '--tag test,etc' /tmp/restic.restjob
-    changed_when: false
-
-  - name: nice is present
-    command: grep -- "^ionice -c2 nice -n +19" /tmp/restic.restjob
-    changed_when: false
-
-  - name: stat
-    stat:
-      path: /etc/restic.repos.d/restrepo/password
-    register: _group
-
-  - name: assert that group is set
-    assert:
-      that:
-      - _group.stat.gr_name == 'bin'
-
-  - name: backup through non default backup script # noqa 301
-    command: bash /tmp/restic.restjob
-    changed_when: false
-
-  - name: non default backup script is present # noqa 208
-    file:
-      path: /tmp/restic.restjob
-
-  - name: check excludes
-    command: grep -- {{ item }} /tmp/restic.restjob
-    changed_when: false
-    loop:
-    - '"^ --exclude /whatever"'
-    - '"^ --exclude /mnt/whatever"'
-
-  - name: / is not in excludes
-    shell: grep -- '--exclude /' /tmp/restic.restjob || true
-    changed_when: false
-
-  - name: 2 excludes are present
-    shell: test $(grep -c -- "--exclude " /tmp/restic.restjob) = "2"
-    changed_when: false
-
-  - name: count words in result from templating
-    shell: |
-      set -o pipefail
-      test $(bash -x /tmp/restic.restjob 2>&1|grep /usr|wc -w) = "17"
-    args:
-      executable: /bin/bash
-    changed_when: false
+    - name: restored file is present
+      file:
+        path: /tmp/etc/hosts
 
 ...

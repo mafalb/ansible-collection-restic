@@ -42,10 +42,6 @@ jobs:
         - '2.10'
         - '2.11'
 
-        include:
-          - target: fedora36
-            has_restserver: true
-
     env:
       ANSIBLE_VERSION: ${{ matrix.ansible_version }}
       PY_COLORS: 1
@@ -82,16 +78,21 @@ jobs:
         source ~/.virtualenvs/molecule/bin/activate
         ansible --version | grep "^ansible.* ${{ matrix.ansible_version }}"
 
-    - name: run molecule restserver scenario
-      if: matrix.has_restserver 
+    - name: run molecule default scenario
       run: |
         source ~/.virtualenvs/molecule/bin/activate
-        molecule -e .env-${{ matrix.target }}.yml test -s restserver
+        molecule -e .env-${{ matrix.target }}.yml test --destroy never
 
     - name: run molecule default scenario
       run: |
         source ~/.virtualenvs/molecule/bin/activate
-        molecule -e .env-${{ matrix.target }}.yml test
+        molecule -e .env-${{ matrix.target }}.yml test --destroy never -s local
+
+    - name: run molecule restserver scenario
+      if: matrix.has_restserver 
+      run: |
+        source ~/.virtualenvs/molecule/bin/activate
+        molecule -e .env-${{ matrix.target }}.yml test --destroy never -s restserver
 
     - name: run molecule uninstall scenario
       run: |

@@ -1,41 +1,33 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: Converge restic
-  hosts: ci_group
-  environment:
-    http_proxy: http://ci-proxy:3128
-    https_proxy: http://ci-proxy:3128
+# copr repo is only necessary if restic is not available from OS.
+#
+- name: create copr_group
+  hosts: client_group
+  tasks:
+    - name: group by
+      group_by:
+        key: copr_group
+      when:
+        - ansible_os_family in ['RedHat','Rocky']
+        - ansible_os_family != 'Fedora'
 
+
+- name: install copr repo
+  hosts: copr_group
   roles:
+    - role: mafalb.copr.plugin
+    - role: mafalb.copr.repo
+      repo: copart/restic
 
-  - role: mafalb.restic.pkg_mgr
-  - role: mafalb.restic.install
 
-  - role: mafalb.restic.repo
-    repo: ci_generated_password
-    url: /tmp/ci_generated_password
-    restic_repo_local_group: bin
-
-  - role: mafalb.restic.job
-    job: test
-    repo: ci_generated_password
-    restic_nice: ionice -c2 nice -n +19
-    paths:
-    - /etc
-    restic_tags:
-    - test
-    - etc
-
-  - role: mafalb.restic.job
-    job: non_default_backup_script
-    repo: ci_generated_password
-    dest: /tmp/restic.non_default_backup_script
-    paths:
-    - /etc
-    exclude:
-    - /mnt/whatever
-    - /whatever
-    - /
+- name: install restic
+  hosts: client_group
+  environment:
+    http_proxy: http://{{ groups['proxy_group'][0] }}:3128
+    https_proxy: http://{{ groups['proxy_group'][0] }}:3128
+  roles:
+    - role: mafalb.restic.install
 
 ...

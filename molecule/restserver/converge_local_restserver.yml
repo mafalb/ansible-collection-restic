@@ -1,0 +1,53 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: converge local rest-server
+  hosts: client_group
+  environment:
+    http_proxy: http://{{ groups['proxy_group'][0] }}:3128
+    https_proxy: http://{{ groups['proxy_group'][0] }}:3128
+  pre_tasks:
+    - name: dependencies are present
+      package:
+        name:
+          - python3-passlib  # for htpasswd
+  roles:
+    - role: mafalb.copr.plugin
+    - role: mafalb.copr.repo
+      repo: jeremythecat/restic
+    - role: mafalb.restic.restserver
+      options:
+        - --append-only
+        - --private-repos
+    - role: mafalb.restic.job
+      job: restjob
+      repo: restrepo
+      paths:
+        - /etc
+      dest: /tmp/restic.restjob
+      restic_tags:
+        - test
+        - etc
+      restic_nice: ionice -c2 nice -n +19
+      exclude:
+      - /mnt/whatever
+      - /whatever
+    - role: mafalb.restic.repo
+      repo: restrepo
+      url: rest:http://restrepo:testpass1@localhost:8000/restrepo
+      password: testpass1
+      restic_repo_local_group: bin
+  tasks:
+    - name: htpasswd is present
+      file:
+        path: /var/lib/rest-server/.htpasswd
+    - name: htpasswd is present
+      htpasswd:
+        name: restrepo
+        password: testpass1
+        crypt_scheme: bcrypt
+        path: /var/lib/rest-server/.htpasswd
+        mode: '640'
+        group: rest-server
+
+...
