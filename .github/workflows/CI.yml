@@ -83,7 +83,7 @@ jobs:
         source ~/.virtualenvs/molecule/bin/activate
         molecule -e .env-${{ matrix.target }}.yml test --destroy never
 
-    - name: run molecule default scenario
+    - name: run molecule local scenario
       run: |
         source ~/.virtualenvs/molecule/bin/activate
         molecule -e .env-${{ matrix.target }}.yml test --destroy never -s local
