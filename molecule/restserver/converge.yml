@@ -14,7 +14,7 @@
       group_by:
         key: copr_group
       when:
-        - ansible_os_family in ['RedHat','Rocky','Fedora']
+        - ansible_os_family in ['RedHat','Rocky']
 
 
 - name: install copr repo for rest-server

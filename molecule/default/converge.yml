@@ -14,7 +14,7 @@
         key: copr_group
       when:
         - ansible_os_family in ['RedHat','Rocky']
-        - ansible_os_family != 'Fedora'
+        - ansible_distribution != 'Fedora'
 
 
 - name: install copr repo
