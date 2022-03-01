@@ -20,7 +20,7 @@ lint: |
 platforms:
 
 - name: ${CI_HOSTNAME_CLIENT}
-  image: ${CI_IMAGE}
+  image: ${CI_IMAGE_CLIENT}
   command: /lib/systemd/systemd
   network_mode: bridge
   docker_networks:
@@ -69,8 +69,6 @@ platforms:
   groups:
     - server_group
     - proxy_group
-  exposed_ports:
-    - 8000/tcp
 
 provisioner:
   name: ansible

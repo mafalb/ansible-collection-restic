@@ -14,11 +14,16 @@
       group_by:
         key: copr_group
       when:
-        - ansible_os_family in ['RedHat','Rocky','Fedora']
+        - ansible_os_family in ['RedHat','Rocky']
+      tags:
+        - molecule-idempotence-notest
 
 
 - name: install copr repo for rest-server
   hosts: copr_group,server_group
+  environment:
+    http_proxy: http://{{ groups['proxy_group'][0] }}:3128
+    https_proxy: http://{{ groups['proxy_group'][0] }}:3128
   roles:
     - role: mafalb.copr.plugin
     - role: mafalb.copr.repo
