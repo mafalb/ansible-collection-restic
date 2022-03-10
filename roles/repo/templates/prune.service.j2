@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Prune old restic backups of repo {{ repo }}
+ConditionACPower=true
+
+[Install]
+WantedBy=multi-user.target
+EnvironmentFile=-/etc/sysconfig/restic.{{ repo }}
+
+[Service]
+Type=oneshot
+ExecStartPre=/usr/bin/test -n ${RESTIC_RETENTION_TIME}
+ExecStartPre=/usr/local/bin/restic.{{ repo }} forget --keep-within ${RESTIC_RETENTION_TIME}
+ExecStart=/usr/local/bin/restic.{{ repo }} prune
+ExecStartPost=/usr/local/bin/restic.{{ repo }} check

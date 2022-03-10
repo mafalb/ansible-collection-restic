@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Forget old restic backups of repo {{ repo }}
+ConditionACPower=true
+Before=restic.{{ repo }}-check.timer
+After=restic.{{ repo }}-forget.timer
+
+[Timer]
+OnCalendar=daily
+Persistent=true
+
+[Install]
+WantedBy=timers.target

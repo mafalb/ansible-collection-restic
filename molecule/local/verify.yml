@@ -7,6 +7,16 @@
   tasks:
 
     - name: init a repository
+      command: restic.pruneit init
+      args:
+        creates: /tmp/pruneit/config
+
+    - name: pruneit
+      service:
+        name: restic.pruneit-prune
+        state: started
+
+    - name: init a repository
       command: restic.localrepo init
       args:
         creates: /tmp/localrepo/config

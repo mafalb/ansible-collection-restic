@@ -1,0 +1,7 @@
+# {{ ansible_managed }}
+#
+{% if restic_retention_time is defined %}
+RESTIC_RETENTION_TIME={{ restic_retention_time }}
+{% else %}
+#RESTIC_RETENTION_TIME=1y
+{% endif %}

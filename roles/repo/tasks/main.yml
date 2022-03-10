@@ -18,10 +18,30 @@
 
   - name: create environment file for repo "{{ repo }}"
     template:
-      src: env.j2
-      dest: /etc/restic.repos.d/{{ repo }}/env
+      src: "{{ t.src }}"
+      dest: "{{ t.dest }}"
       backup: true
       mode: 0644
+    loop:
+      - src: env.j2
+        dest: /etc/restic.repos.d/{{ repo }}/env
+      - src: repo.sysconfig.j2
+        dest: /etc/sysconfig/restic.{{ repo }}
+    loop_control:
+      loop_var: t
+
+  - name: systemd units are present
+    template:
+      src: "{{ unit }}.j2"
+      dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+      mode: '0644'
+    loop:
+      - prune.service
+      - prune.timer
+    loop_control:
+      loop_var: unit
+    when: restic_retention_time is defined
+    notify: systemd daemon-reload
 
   - name: cachedir is present
     file:
