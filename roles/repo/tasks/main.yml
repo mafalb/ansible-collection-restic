@@ -46,7 +46,7 @@
           - systemd daemon-reload
           - restart prune.timer
 
-      - name: prune timer is enabled/disabled
+      - name: prune timer is started/stopped
         systemd:
           name: restic.{{ repo }}-prune.timer
           state: "{{ 'started' if restic_retention_time is defined else 'stopped' }}"
