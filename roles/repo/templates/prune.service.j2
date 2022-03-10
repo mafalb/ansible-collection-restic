@@ -8,7 +8,7 @@ WantedBy=multi-user.target
 
 [Service]
 Type=oneshot
-EnvironmentFile=/etc/sysconfig/restic.{{ repo }}
+Environment=RESTIC_RETENTION_TIME={{ restic_retention_time|default('') }}
 ExecStartPre=/usr/bin/test -n ${RESTIC_RETENTION_TIME}
 ExecStartPre=/usr/local/bin/restic.{{ repo }} forget --keep-within ${RESTIC_RETENTION_TIME}
 ExecStart=/usr/local/bin/restic.{{ repo }} prune

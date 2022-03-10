@@ -27,8 +27,6 @@
     loop:
       - src: env.j2
         dest: /etc/restic.repos.d/{{ repo }}/env
-      - src: repo.sysconfig.j2
-        dest: /etc/sysconfig/restic.{{ repo }}
     loop_control:
       loop_var: t
 
