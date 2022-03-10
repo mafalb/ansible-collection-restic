@@ -3,10 +3,12 @@
 
 - name: get OS specific variables
   ansible.builtin.include_vars:
-    file: "{{ item }}"
+    file: "{{ _item }}"
   with_first_found:
   - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
   - default.yml
+  loop_control:
+    loop_var: _item
 
 - block:
 
