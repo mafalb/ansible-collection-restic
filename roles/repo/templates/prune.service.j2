@@ -5,10 +5,10 @@ ConditionACPower=true
 
 [Install]
 WantedBy=multi-user.target
-EnvironmentFile=-/etc/sysconfig/restic.{{ repo }}
 
 [Service]
 Type=oneshot
+EnvironmentFile=/etc/sysconfig/restic.{{ repo }}
 ExecStartPre=/usr/bin/test -n ${RESTIC_RETENTION_TIME}
 ExecStartPre=/usr/local/bin/restic.{{ repo }} forget --keep-within ${RESTIC_RETENTION_TIME}
 ExecStart=/usr/local/bin/restic.{{ repo }} prune
