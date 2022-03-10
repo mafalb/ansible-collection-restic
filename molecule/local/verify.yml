@@ -16,6 +16,13 @@
         name: restic.pruneit-prune
         state: started
 
+    - name: assert that prune timer is enabled  # noqa: risky-shell-pipe
+      shell: |
+        systemctl status restic.pruneit-prune.timer|grep '; enabled;'
+      args:
+        executable: /bin/bash
+      changed_when: false
+
     - name: init a repository
       command: restic.localrepo init
       args:

@@ -42,14 +42,12 @@
       - prune.timer
     loop_control:
       loop_var: unit
-    when: restic_retention_time is defined
     notify: systemd daemon-reload
 
-  - name: prune timer is enabled
+  - name: prune timer is enabled/disabled
     systemd:
       name: restic.{{ repo }}-prune.timer
-      enabled: true
-    when: restic_retention_time is defined
+      enabled: "{{ true if restic_retention_time is defined else false }}"
 
   - name: cachedir is present
     file:
