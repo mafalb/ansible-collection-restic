@@ -38,4 +38,5 @@
       repo: pruneit
       url: /tmp/pruneit
       restic_retention_time: 1y
+
 ...
