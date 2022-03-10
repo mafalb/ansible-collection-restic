@@ -21,6 +21,7 @@
       - name: assert that prune timer is enabled  # noqa: risky-shell-pipe
         shell: |
           systemctl status restic.pruneit-prune.timer|grep '; enabled;'
+          systemctl is-active restic.pruneit-prune.timer
         args:
           executable: /bin/bash
         changed_when: false

@@ -42,11 +42,14 @@
           - prune.timer
         loop_control:
           loop_var: unit
-        notify: systemd daemon-reload
+        notify:
+          - systemd daemon-reload
+          - restart prune.timer
 
       - name: prune timer is enabled/disabled
         systemd:
           name: restic.{{ repo }}-prune.timer
+          state: started
           enabled: "{{ true if restic_retention_time is defined else false }}"
     when: restic_has_keep_within|default(true)
 

@@ -4,4 +4,9 @@
   systemd:
     daemon-reload: true
 
+- name: restart prune.timer
+  systemd:
+    name: restic.{{ repo }}-prune.timer
+    state: restarted
+
 ...
