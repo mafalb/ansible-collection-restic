@@ -30,22 +30,25 @@
     loop_control:
       loop_var: t
 
-  - name: systemd units are present
-    template:
-      src: "{{ unit }}.j2"
-      dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
-      mode: '0644'
-    loop:
-      - prune.service
-      - prune.timer
-    loop_control:
-      loop_var: unit
-    notify: systemd daemon-reload
+  - name: systemd units for forget/prune/check are present
+    block:
+      - name: systemd units are present
+        template:
+          src: "{{ unit }}.j2"
+          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          mode: '0644'
+        loop:
+          - prune.service
+          - prune.timer
+        loop_control:
+          loop_var: unit
+        notify: systemd daemon-reload
 
-  - name: prune timer is enabled/disabled
-    systemd:
-      name: restic.{{ repo }}-prune.timer
-      enabled: "{{ true if restic_retention_time is defined else false }}"
+      - name: prune timer is enabled/disabled
+        systemd:
+          name: restic.{{ repo }}-prune.timer
+          enabled: "{{ true if restic_retention_time is defined else false }}"
+    when: restic_has_keep_within|default(true)
 
   - name: cachedir is present
     file:
