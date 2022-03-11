@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.0 2022-03-XX
+
+- add restic_retention_time for mafalb.restic.repo
+- remove support for CentOS 8
+
 ## 0.3.0 2021-07-14
 
 - support for Rocky 8

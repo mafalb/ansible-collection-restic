@@ -1,0 +1,49 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- import_playbook: verify_local_restserver.yml
+  when:
+    - lookup('env','HAS_RESTSERVER')|bool
+
+# we need to run tasks on server
+- hosts: server_group
+  tasks: []
+
+- name: verify remote rest-server
+  hosts: client_group
+
+  tasks:
+
+    - name: backup script is present # noqa 208
+      file:
+        path: /usr/local/bin/restic.remoterestrepo1.remoterestjob1
+
+    - name: stat repo config
+      delegate_to: "{{ groups['server_group'][0] }}"
+      stat:
+        path: /var/lib/rest-server/remoterestrepo1/config
+
+      register: _remoterestrepo1_config
+    - name: init a repository
+      command: /usr/local/bin/restic.remoterestrepo1 init
+      when: not _remoterestrepo1_config.stat.exists|bool
+
+    - name: a key is set
+      shell: |
+        set -o pipefail
+        /usr/local/bin/restic.remoterestrepo1 key list | grep "^\*"
+      changed_when: false
+      args:
+        executable: /bin/bash
+
+    - name: backup  # noqa 301
+      command: /usr/local/bin/restic.remoterestrepo1.remoterestjob1
+
+    - name: restore  # noqa 301
+      command: /usr/local/bin/restic.remoterestrepo1 restore --include /etc/hosts --target /tmp latest
+
+    - name: restored file is present
+      file:
+        path: /tmp/etc/hosts
+
+...

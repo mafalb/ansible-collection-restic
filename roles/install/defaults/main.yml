@@ -21,6 +21,7 @@ exclude_global:
 - /home/*/VirtualBox VMs/*/*.vdi
 - /run/media/*/CentOS-*
 - /run/media/*/ubuntu-*
+- /run/media/*/Ubuntu*
 - /run/media/*/fedora-*
 - /run/media/*/rhel-*
 

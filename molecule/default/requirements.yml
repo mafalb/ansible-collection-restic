@@ -2,6 +2,7 @@
 ---
 
 collections:
+- name: community.general
 - name: mafalb.squid
 - name: mafalb.copr
   version: '>=0.1.0'

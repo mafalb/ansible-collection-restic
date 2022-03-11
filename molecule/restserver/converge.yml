@@ -1,0 +1,76 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: run converge from default scenario
+  import_playbook: ../default/converge.yml
+
+# copr repo is only necessary if rest-server is not available from OS.
+#
+- name: create copr_group for rest-server
+  hosts:
+    - client_group
+  tasks:
+    - name: group by
+      group_by:
+        key: copr_group
+      when:
+        - ansible_os_family in ['RedHat','Rocky']
+      tags:
+        - molecule-idempotence-notest
+
+
+- name: install copr repo for rest-server
+  hosts: copr_group,server_group
+  environment:
+    http_proxy: http://{{ groups['proxy_group'][0] }}:3128
+    https_proxy: http://{{ groups['proxy_group'][0] }}:3128
+  roles:
+    - role: mafalb.copr.plugin
+    - role: mafalb.copr.repo
+      repo: jeremythecat/restic
+
+
+- name: converge remote rest-server
+  hosts: server_group
+  environment:
+    http_proxy: http://{{ groups['proxy_group'][0] }}:3128
+    https_proxy: http://{{ groups['proxy_group'][0] }}:3128
+  pre_tasks:
+    - name: dependencies are present
+      package:
+        name:
+          - python3-passlib  # for htpasswd
+  roles:
+    - role: mafalb.restic.restserver
+      options:
+        - --append-only
+        - --private-repos
+      listen: ':8000'
+  tasks:
+    - name: htpasswd is present
+      file:
+        path: /var/lib/rest-server/.htpasswd
+    - name: htpasswd is present
+      htpasswd:
+        name: remoterestrepo1
+        password: testpass1
+        crypt_scheme: bcrypt
+        path: /var/lib/rest-server/.htpasswd
+        mode: '640'
+        group: rest-server
+
+
+- name: converge restic
+  hosts: client_group
+  roles:
+    - role: mafalb.restic.job
+      job: remoterestjob1
+      repo: remoterestrepo1
+      paths:
+        - /etc
+    - role: mafalb.restic.repo
+      repo: remoterestrepo1
+      url: rest:http://remoterestrepo1:testpass1@{{ groups['server_group'][0] }}:8000/remoterestrepo1
+      password: testpass1
+
+...

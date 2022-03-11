@@ -1,0 +1,99 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: Verify
+  hosts: client_group
+
+  tasks:
+
+    # the restic in Ubuntu 18 is pretty old and has no --keep-within parameters to forget
+    - block:
+      - name: init a repository
+        command: restic.pruneit init
+        args:
+          creates: /tmp/pruneit/config
+
+      - name: pruneit
+        service:
+          name: restic.pruneit-prune
+          state: started
+
+      - name: assert that prune timer is enabled  # noqa: risky-shell-pipe
+        shell: |
+          systemctl status restic.pruneit-prune.timer|grep '; enabled;'
+          systemctl is-active restic.pruneit-prune.timer
+        args:
+          executable: /bin/bash
+        changed_when: false
+      when: not (ansible_distribution == 'Ubuntu' and
+                 ansible_distribution_major_version == '18')
+
+    - name: init a repository
+      command: restic.localrepo init
+      args:
+        creates: /tmp/localrepo/config
+
+    - name: backup # noqa 301
+      command: restic.localrepo.localjob1
+
+    - name: a key is set
+      shell: |
+        set -o pipefail
+        /usr/local/bin/restic.localrepo key list | grep "^\*"
+      changed_when: false
+      args:
+        executable: /bin/bash
+
+    - name: backup script is present # noqa 208
+      file:
+        path: /usr/local/bin/restic.localrepo.localjob1
+
+    - name: tags are present
+      command: grep -- '--tag test,etc' /usr/local/bin/restic.localrepo.localjob1
+      changed_when: false
+
+    - name: nice is present
+      command: grep -- "^ionice -c2 nice -n +19" /usr/local/bin/restic.localrepo.localjob1
+      changed_when: false
+
+    - name: stat
+      stat:
+        path: /etc/restic.repos.d/localrepo/password
+      register: _group
+
+    - name: assert that group is set
+      assert:
+        that:
+        - _group.stat.gr_name == 'bin'
+
+    - name: non default backup script is present # noqa 208
+      file:
+        path: /tmp/restic.localrepo.localjob2
+
+    - name: backup through non default backup script # noqa 301
+      command: bash /tmp/restic.localrepo.localjob2
+
+    - name: check excludes
+      command: grep -- {{ item }} /tmp/restic.localrepo.localjob2
+      changed_when: false
+      loop:
+      - '"^ --exclude /whatever"'
+      - '"^ --exclude /mnt/whatever"'
+
+    - name: / is not in excludes
+      shell: grep -- '--exclude /' /tmp/restic.localrepo.localjob2 || true
+      changed_when: false
+
+    - name: 2 excludes are present
+      shell: test $(grep -c -- "--exclude " /tmp/restic.localrepo.localjob2) = "2"
+      changed_when: false
+
+    - name: count words in result from templating
+      shell: |
+        set -o pipefail
+        test $(bash -x /tmp/restic.localrepo.localjob2 2>&1|grep +\ /usr|wc -w) = "10"
+      args:
+        executable: /bin/bash
+      changed_when: false
+
+...

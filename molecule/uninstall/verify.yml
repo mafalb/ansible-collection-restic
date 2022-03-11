@@ -2,7 +2,7 @@
 ---
 
 - name: Verify
-  hosts: all,!ci-proxy
+  hosts: client_group
 
   tasks:
 

@@ -1,15 +1,12 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: Verify
-  hosts: all,!ci-proxy
-
+- name: verify default scenario
+  hosts: client_group
   tasks:
-
   - name: restic is executable
     command: restic --help
     changed_when: false
-
   - name: global exclude file is not executable
     shell: |
       set -o pipefail
@@ -17,75 +14,6 @@
     changed_when: false
     args:
       executable: /bin/bash
-
-  - name: init a repository
-    command: restic.ci_generated_password init
-    args:
-      creates: /tmp/ci_generated_password/config
-
-  - name: backup # noqa 301
-    command: restic.ci_generated_password.test
-
-  - name: a key is set
-    shell: |
-      set -o pipefail
-      /usr/local/bin/restic.ci_generated_password key list | grep "^\*"
-    changed_when: false
-    args:
-      executable: /bin/bash
-
-  - name: backup script is present # noqa 208
-    file:
-      path: /usr/local/bin/restic.ci_generated_password.test
-
-  - name: tags are present
-    command: grep -- '--tag test,etc' /usr/local/bin/restic.ci_generated_password.test
-    changed_when: false
- 
-  - name: nice is present
-    command: grep -- "^ionice -c2 nice -n +19" /usr/local/bin/restic.ci_generated_password.test
-    changed_when: false
-
-  - name: stat
-    stat:
-      path: /etc/restic.repos.d/ci_generated_password/password
-    register: _group
-    
-  - name: assert that group is set
-    assert:
-      that:
-      - _group.stat.gr_name == 'bin'
-
-  - name: backup through non default backup script # noqa 301
-    command: bash /tmp/restic.non_default_backup_script
-
-  - name: non default backup script is present # noqa 208
-    file:
-      path: /tmp/restic.non_default_backup_script
-
-  - name: check excludes
-    command: grep -- {{ item }} /tmp/restic.non_default_backup_script
-    changed_when: false
-    loop:
-    - '"^ --exclude /whatever"'
-    - '"^ --exclude /mnt/whatever"'
-
-  - name: / is not in excludes
-    shell: grep -- '--exclude /' /tmp/restic.non_default_backup_script || true
-    changed_when: false
-
-  - name: 2 excludes are present
-    shell: test $(grep -c -- "--exclude " /tmp/restic.non_default_backup_script) = "2"
-    changed_when: false
-
-  - name: count words in result from templating
-    shell: |
-      set -o pipefail
-      test $(bash -x /tmp/restic.non_default_backup_script 2>&1|grep +\ /usr|wc -w) = "10"
-    args:
-      executable: /bin/bash
-    changed_when: false
-
   - name: fusermount is present # noqa 208
     file:
       path: /bin/fusermount

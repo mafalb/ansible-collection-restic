@@ -1,0 +1,7 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+# restic has no --keep-within option for forget
+restic_has_keep_within: false
+
+...

@@ -1,13 +1,11 @@
 # vim: set ft=yaml ts=2 expandtab:
 ---
 
-- name: Converge proxy
-  hosts: ci-proxy
-  roles:
-  - role: mafalb.squid.server
+- name: import converge from default scenario
+  import_playbook: ../default/converge.yml
 
-- name: uninstall restic job
-  hosts: all,!ci-proxy
+- name: converge scenario uninstall
+  hosts: client_group
 
   roles:
 

@@ -1,0 +1,42 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+- name: run converge from default scenario
+  import_playbook: ../default/converge.yml
+
+- name: converge local repo and jobs
+  hosts: client_group
+  environment:
+    http_proxy: http://{{ groups['proxy_group'][0] }}:3128
+    https_proxy: http://{{ groups['proxy_group'][0] }}:3128
+  roles:
+    - role: mafalb.restic.repo
+      repo: localrepo
+      url: /tmp/localrepo
+      restic_repo_local_group: bin
+    - role: mafalb.restic.job
+      job: localjob1
+      repo: localrepo
+      restic_nice: ionice -c2 nice -n +19
+      paths:
+        - /etc
+      restic_tags:
+        - test
+        - etc
+    - role: mafalb.restic.job
+      job: localjob2
+      repo: localrepo
+      dest: /tmp/restic.localrepo.localjob2
+      paths:
+        - /etc
+      exclude:
+        - /mnt/whatever
+        - /whatever
+        - /
+
+    - role: mafalb.restic.repo
+      repo: pruneit
+      url: /tmp/pruneit
+      restic_retention_time: 1y
+
+...

@@ -1,0 +1,13 @@
+---
+
+- name: systemd daemon-reload
+  systemd:
+    daemon-reload: true
+
+- name: restart prune.timer
+  systemd:
+    name: restic.{{ repo }}-prune.timer
+    state: restarted
+  when: restic_retention_time is defined
+
+...

@@ -1,0 +1,89 @@
+# vim: set ft=yaml ts=2 expandtab:
+---
+
+dependency:
+  name: galaxy
+  options:
+    role-file: idontexist.yml   # avoid warning while running molecule
+    requirements-file: molecule/default/requirements.yml
+
+driver:
+  name: ${CI_DRIVER:-podman}
+
+lint: |
+  set -e
+  ! grep -r "no_log: false" .
+  ansible-lint -v
+  ansible-lint -v roles/*/vars/*.yml
+  flake8 -v
+
+platforms:
+
+- name: ${CI_HOSTNAME_CLIENT}
+  image: ${CI_IMAGE_CLIENT}
+  command: /lib/systemd/systemd
+  network_mode: bridge
+  docker_networks:
+    - name: molecule-internal
+      internal: true
+  networks:
+    - name: molecule-internal
+  network: molecule-internal  # podman only
+  devices:
+    - /dev/fuse:/dev/fuse:rwm
+  volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+    - /run
+    - /run/lock
+    - /tmp
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  groups:
+    - client_group
+
+- name: ${CI_HOSTNAME_SERVER}
+  image: ${CI_IMAGE_SERVER}
+  command: /lib/systemd/systemd
+  network_mode: bridge
+  docker_networks:
+    - name: molecule-internal
+      internal: true
+    - name: molecule-external
+  networks:
+    - name: molecule-external
+    - name: molecule-internal
+  network: molecule-internal,molecule-external  # podman only
+  volumes:
+    - "/sys/fs/cgroup:/sys/fs/cgroup:ro"
+  tmpfs:
+    - /run
+    - /run/lock
+    - /tmp
+  capabilities:
+    - SYS_ADMIN
+  privileged: ${CI_CONTAINER_PRIVILEGED:-false}
+  pre_build_image: ${CI_CONTAINER_PREBUILT:-false}
+  groups:
+    - server_group
+    - proxy_group
+
+provisioner:
+  name: ansible
+  ansible_args:
+    - --tags=all,debug
+    - --diff
+  config_options:
+    defaults:
+      gathering: smart
+  lint:
+    name: ansible-lint
+
+verifier:
+  name: ansible
+  lint:
+    name: ansible-lint
+
+...

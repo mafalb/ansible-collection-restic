@@ -3,10 +3,12 @@
 
 - name: get OS specific variables
   ansible.builtin.include_vars:
-    file: "{{ item }}"
+    file: "{{ _item }}"
   with_first_found:
   - "{{ ansible_distribution }}-{{ ansible_distribution_major_version }}.yml"
   - default.yml
+  loop_control:
+    loop_var: _item
 
 - block:
 
@@ -18,10 +20,38 @@
 
   - name: create environment file for repo "{{ repo }}"
     template:
-      src: env.j2
-      dest: /etc/restic.repos.d/{{ repo }}/env
+      src: "{{ t.src }}"
+      dest: "{{ t.dest }}"
       backup: true
       mode: 0644
+    loop:
+      - src: env.j2
+        dest: /etc/restic.repos.d/{{ repo }}/env
+    loop_control:
+      loop_var: t
+
+  - name: systemd units for forget/prune/check are present
+    block:
+      - name: systemd units are present
+        template:
+          src: "{{ unit }}.j2"
+          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          mode: '0644'
+        loop:
+          - prune.service
+          - prune.timer
+        loop_control:
+          loop_var: unit
+        notify:
+          - systemd daemon-reload
+          - restart prune.timer
+
+      - name: prune timer is started/stopped
+        systemd:
+          name: restic.{{ repo }}-prune.timer
+          state: "{{ 'started' if restic_retention_time is defined else 'stopped' }}"
+          enabled: "{{ true if restic_retention_time is defined else false }}"
+    when: restic_has_keep_within|default(true)
 
   - name: cachedir is present
     file:
@@ -36,7 +66,8 @@
       dest: /etc/restic.repos.d/{{ repo }}/password
       backup: true
       mode: 0440
-    when: repic_repo_password is defined
+      force: false
+    when: password is defined
 
   - name: create a new password for repo "{{ repo }}"
     copy:
@@ -45,12 +76,14 @@
       group: "{{ restic_repo_local_group|default(omit) }}"
       backup: true
       force: false
-      mode: 0440
+      mode: '440'
 
+  # mode and ownership maybe wrong
   - name: create a new password for repo "{{ repo }}"
     file:
       dest: /etc/restic.repos.d/{{ repo }}/password
       group: "{{ restic_repo_local_group|default(omit) }}"
+      mode: '440'
 
   - name: wrapper script is present for repo "{{ repo }}"
     template:
