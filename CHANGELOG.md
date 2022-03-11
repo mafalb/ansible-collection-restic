@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.4.0 2022-03-XX
+## 0.4.0 2022-03-11
 
 - add restic_retention_time for mafalb.restic.repo
 - remove support for CentOS 8
