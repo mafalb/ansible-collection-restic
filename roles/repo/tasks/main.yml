@@ -30,9 +30,34 @@
     loop_control:
       loop_var: t
 
-  - name: systemd units for forget/prune/check are present
+  - name: systemd units for forget are present
     block:
-      - name: systemd units are present
+      - name: systemd units are present (forget)
+        template:
+          src: "{{ unit }}.j2"
+          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          mode: '0644'
+        loop:
+          - forget.service
+          - forget.timer
+        loop_control:
+          loop_var: unit
+        notify:
+          - restart forget.timer
+        register: _reg_restic_repo_systemd_units
+      - debug: msg="{{ _reg_restic_repo_systemd_units.results }}"
+      - debug: msg="{{ _reg_restic_repo_systemd_units.results|selectattr('changed')|list }}"
+      - name: systemd daemon-reload
+        systemd:
+          daemon-reload: true
+        when: _reg_restic_repo_systemd_units.results|selectattr('changed')|list
+      - name: forget timer are started/stopped
+        systemd:
+          name: restic.{{ repo }}-forget.timer
+          state: "{{ 'started' if restic_forget is defined else 'stopped' }}"
+          enabled: "{{ true if restic_forget is defined else false }}"
+
+      - name: systemd units are present (prune)
         template:
           src: "{{ unit }}.j2"
           dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
@@ -45,13 +70,32 @@
         notify:
           - systemd daemon-reload
           - restart prune.timer
-
-      - name: prune timer is started/stopped
+      - name: prune timer are started/stopped
         systemd:
           name: restic.{{ repo }}-prune.timer
-          state: "{{ 'started' if restic_retention_time is defined else 'stopped' }}"
-          enabled: "{{ true if restic_retention_time is defined else false }}"
-    when: restic_has_keep_within|default(true)
+          state: "{{ 'started' if restic_prune is defined else 'stopped' }}"
+          enabled: "{{ true if restic_forget is defined else false }}"
+
+      - name: systemd units are present (check)
+        template:
+          src: "{{ unit }}.j2"
+          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          mode: '0644'
+        loop:
+          - check.service
+          - check.timer
+        loop_control:
+          loop_var: unit
+        notify:
+          - systemd daemon-reload
+          - restart check.timer
+      - name: check timer are started/stopped
+        systemd:
+          name: restic.{{ repo }}-check.timer
+          state: "{{ 'started' if restic_check is defined else 'stopped' }}"
+          enabled: "{{ true if restic_check is defined else false }}"
+    when:
+      - restic_has_keep_within|default(true)
 
   - name: cachedir is present
     file:

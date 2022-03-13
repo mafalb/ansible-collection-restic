@@ -1,0 +1,15 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Forget old restic backups in repo {{ repo }}
+ConditionACPower=true
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/restic.{{ repo }} forget{% for flag in restic_forget.flags|default({})|dict2items %} --{{ flag.key }} {{ flag.value }}{% endfor %} {% if restic_forget.prune|default(false) %} --prune{% endif %}
+
+{% if restic_forget.check|default(false) %}
+ExecStartPost=/usr/local/bin/restic.{{ repo }} check
+{% endif %}

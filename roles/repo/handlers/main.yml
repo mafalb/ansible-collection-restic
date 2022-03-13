@@ -4,10 +4,22 @@
   systemd:
     daemon-reload: true
 
+- name: restart forget.timer
+  systemd:
+    name: restic.{{ repo }}-forget.timer
+    state: restarted
+  when: restic_forget is defined
+
 - name: restart prune.timer
   systemd:
     name: restic.{{ repo }}-prune.timer
     state: restarted
-  when: restic_retention_time is defined
+  when: restic_prune is defined
+
+- name: restart check.timer
+  systemd:
+    name: restic.{{ repo }}-check.timer
+    state: restarted
+  when: restic_check is defined
 
 ...

@@ -1,0 +1,131 @@
+# Copyright (c) 2022 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
+---
+
+argument_specs:  # noqa 701
+  main:
+    short_description: Role for creating and maintaining a restic repo.
+    description:
+      - Create a restic repo.
+      - Create jobs for forget/prune/check
+
+    options:
+
+      restic_repo_state:
+        description:
+        - The state of the restic repo
+        aliases:
+          - state
+        type: str
+        choices:
+        - absent
+        - present
+        default: present
+
+      restic_repo:
+        description:
+          - The name of the restic repo.
+        aliases:
+          - repo
+        type: str
+        required: true
+
+      restic_repo_url:
+        description:
+          - the URI that designates the restic repo.
+        aliases:
+          - url
+        type: str
+        required: true
+
+      restic_forget:
+        description:
+          - Install a periodic job that runs restic forget.
+        type: dict
+        options:
+          flags:
+            descriptions:
+              - flags to pass to restic forget
+            type: dict
+            required: true
+          prune:
+            description:
+              - true if you want to to prune from within the forget job
+            type: bool
+            default: true
+          check:
+            description:
+              - set to true if you want to to check from within the forget job
+            type: bool
+            default: true
+          schedule:
+            description:
+              - How to schedule restic forget.
+            type: dict
+            required: true
+            options:
+              oncalendar:
+                type: str
+                default: weekly
+              delay:
+                type: str
+
+      restic_prune:
+        description:
+          - Install a periodic job that runs restic prune.
+        type: dict
+        options:
+          check:
+            type: bool
+            default: true
+          flags:
+            descriptions:
+              - flags to pass to restic prune
+            type: dict
+          schedule:
+            type: dict
+            required: true
+            options:
+              oncalendar:
+                type: str
+                default: weekly
+              delay:
+                type: str
+                default: 2h50m
+
+      restic_check:
+        description:
+          - Install a periodic job that runs restic check.
+        type: dict
+        options:
+          flags:
+            descriptions:
+              - flags to pass to restic check
+            type: dict
+          schedule:
+            type: dict
+            required: true
+            options:
+              oncalendar:
+                type: str
+                default: weekly
+              delay:
+                type: str
+                default: 2h50m
+
+      restic_retention_time:
+        description:
+          - A time specification for forget's --keep-within option
+          - Use C(restic_retention_data) instead.
+        type: str
+      
+      restic_repo_group:
+        description:
+          - The name of a local user group.
+          - This makes sense probably only for local repos.
+        aliases:
+          - restic_repo_local_group
+        type: str
+
+...

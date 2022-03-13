@@ -8,23 +8,72 @@
 
     # the restic in Ubuntu 18 is pretty old and has no --keep-within parameters to forget
     - block:
-      - name: init a repository
-        command: restic.pruneit init
+      - name: init a repositories
+        command: restic.{{ item }} init
         args:
-          creates: /tmp/pruneit/config
+          creates: /tmp/{{ item }}/config
+        loop:
+          - forgetit
+          - pruneit
+          - checkit
+          - checkit2
 
-      - name: pruneit
+      - name: forgetit service
         service:
-          name: restic.pruneit-prune
+          name: restic.{{ item }}-forget
           state: started
+        loop:
+          - forgetit
+          - pruneit
+          - checkit
 
-      - name: assert that prune timer is enabled  # noqa: risky-shell-pipe
+      - name: pruneit service
+        service:
+          name: restic.{{ item }}-prune
+          state: started
+        loop:
+          - pruneit
+          - checkit
+
+      - name: checkit service
+        service:
+          name: restic.{{ item }}-check
+          state: started
+        loop:
+          - checkit
+          - checkit2
+
+      - name: assert that forget timer is enabled  # noqa: risky-shell-pipe
         shell: |
-          systemctl status restic.pruneit-prune.timer|grep '; enabled;'
-          systemctl is-active restic.pruneit-prune.timer
+          systemctl status restic.{{ item }}-forget.timer|grep '; enabled;'
+          systemctl is-active restic.{{ item }}-forget.timer
         args:
           executable: /bin/bash
         changed_when: false
+        loop:
+          - forgetit
+          - pruneit
+          - checkit
+      - name: assert that prune timer is enabled  # noqa: risky-shell-pipe
+        shell: |
+          systemctl status restic.{{ item }}-prune.timer|grep '; enabled;'
+          systemctl is-active restic.{{ item }}-prune.timer
+        args:
+          executable: /bin/bash
+        changed_when: false
+        loop:
+          - pruneit
+          - checkit
+      - name: assert that check timer is enabled  # noqa: risky-shell-pipe
+        shell: |
+          systemctl status restic.{{ item }}-check.timer|grep '; enabled;'
+          systemctl is-active restic.{{ item }}-check.timer
+        args:
+          executable: /bin/bash
+        changed_when: false
+        loop:
+          - checkit
+          - checkit2
       when: not (ansible_distribution == 'Ubuntu' and
                  ansible_distribution_major_version == '18')
 

@@ -35,8 +35,57 @@
         - /
 
     - role: mafalb.restic.repo
+      repo: forgetit
+      url: /tmp/forgetit
+      restic_forget:
+        flags:
+          keep-within: 1y
+          keep-daily: 365
+        prune: true
+        check: true
+        schedule:
+          oncalendar: daily
+
+    - role: mafalb.restic.repo
       repo: pruneit
       url: /tmp/pruneit
-      restic_retention_time: 1y
+      restic_forget:
+        flags:
+          keep-within: 1y
+          keep-daily: 365
+        schedule:
+          oncalendar: daily
+          delay: 2h31m
+      restic_prune:
+        check: true
+        schedule:
+          oncalendar: weekly
+
+    - role: mafalb.restic.repo
+      repo: checkit
+      url: /tmp/checkit
+      restic_forget:
+        flags:
+          keep-within: 1y
+          keep-daily: 365
+        schedule:
+          oncalendar: daily
+          delay: 2h32m
+      restic_prune:
+        check: true
+        schedule:
+          oncalendar: weekly
+          delay: 2h33m
+      restic_check:
+        schedule:
+          oncalendar: weekly
+
+    - role: mafalb.restic.repo
+      repo: checkit2
+      url: /tmp/checkit2
+      restic_check:
+        schedule:
+          oncalendar: weekly
+          delay: 1h
 
 ...
