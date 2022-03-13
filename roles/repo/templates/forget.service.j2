@@ -2,6 +2,7 @@
 [Unit]
 Description=Forget old restic backups in repo {{ repo }}
 ConditionACPower=true
+Before=restic.{{ repo }}-prune.service restic.{{ repo }}-check.service
 
 [Install]
 WantedBy=multi-user.target

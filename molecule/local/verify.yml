@@ -18,7 +18,7 @@
           - checkit
           - checkit2
 
-      - name: forgetit service
+      - name: forget service
         service:
           name: restic.{{ item }}-forget
           state: started

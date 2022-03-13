@@ -55,7 +55,6 @@
           keep-daily: 365
         schedule:
           oncalendar: daily
-          delay: 2h31m
       restic_prune:
         check: true
         schedule:
