@@ -45,8 +45,6 @@
         notify:
           - restart forget.timer
         register: _reg_restic_repo_systemd_units
-      - debug: msg="{{ _reg_restic_repo_systemd_units.results }}"
-      - debug: msg="{{ _reg_restic_repo_systemd_units.results|selectattr('changed')|list }}"
       - name: systemd daemon-reload
         systemd:
           daemon-reload: true
