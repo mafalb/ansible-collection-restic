@@ -26,8 +26,6 @@ argument_specs:  # noqa 701
       restic_repo:
         description:
           - The name of the restic repo.
-        aliases:
-          - repo
         type: str
         required: true
 
@@ -67,7 +65,7 @@ argument_specs:  # noqa 701
             options:
               oncalendar:
                 type: str
-                default: weekly
+                required: true
               delay:
                 type: str
 
@@ -89,7 +87,7 @@ argument_specs:  # noqa 701
             options:
               oncalendar:
                 type: str
-                default: weekly
+                required: true
               delay:
                 type: str
                 default: 2h50m
@@ -109,7 +107,7 @@ argument_specs:  # noqa 701
             options:
               oncalendar:
                 type: str
-                default: weekly
+                required: true
               delay:
                 type: str
                 default: 2h50m

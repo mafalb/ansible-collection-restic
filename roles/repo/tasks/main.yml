@@ -12,13 +12,13 @@
 
 - block:
 
-  - name: create directory for repo "{{ repo|mandatory }}"
+  - name: create directory for repo "{{ restic_repo }}"
     file:
-      path: /etc/restic.repos.d/{{ repo|mandatory }}
+      path: /etc/restic.repos.d/{{ restic_repo }}
       state: directory
       mode: 0755
 
-  - name: create environment file for repo "{{ repo }}"
+  - name: create environment file for repo "{{ restic_repo }}"
     template:
       src: "{{ t.src }}"
       dest: "{{ t.dest }}"
@@ -26,7 +26,7 @@
       mode: 0644
     loop:
       - src: env.j2
-        dest: /etc/restic.repos.d/{{ repo }}/env
+        dest: /etc/restic.repos.d/{{ restic_repo }}/env
     loop_control:
       loop_var: t
 
@@ -35,7 +35,7 @@
       - name: systemd units are present (forget)
         template:
           src: "{{ unit }}.j2"
-          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          dest: /etc/systemd/system/restic.{{ restic_repo }}-{{ unit }}
           mode: '0644'
         loop:
           - forget.service
@@ -51,14 +51,14 @@
         when: _reg_restic_repo_systemd_units.results|selectattr('changed')|list
       - name: forget timer are started/stopped
         systemd:
-          name: restic.{{ repo }}-forget.timer
-          state: "{{ 'started' if restic_forget is defined else 'stopped' }}"
-          enabled: "{{ true if restic_forget is defined else false }}"
+          name: restic.{{ restic_repo }}-forget.timer
+          state: "{{ 'started' if restic_forget|default(false) else 'stopped' }}"
+          enabled: "{{ true if restic_forget|default(false) else false }}"
 
       - name: systemd units are present (prune)
         template:
           src: "{{ unit }}.j2"
-          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          dest: /etc/systemd/system/restic.{{ restic_repo }}-{{ unit }}
           mode: '0644'
         loop:
           - prune.service
@@ -70,14 +70,14 @@
           - restart prune.timer
       - name: prune timer are started/stopped
         systemd:
-          name: restic.{{ repo }}-prune.timer
-          state: "{{ 'started' if restic_prune is defined else 'stopped' }}"
-          enabled: "{{ true if restic_forget is defined else false }}"
+          name: restic.{{ restic_repo }}-prune.timer
+          state: "{{ 'started' if restic_prune|default(false) else 'stopped' }}"
+          enabled: "{{ true if restic_forget|default(false) else false }}"
 
       - name: systemd units are present (check)
         template:
           src: "{{ unit }}.j2"
-          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
+          dest: /etc/systemd/system/restic.{{ restic_repo }}-{{ unit }}
           mode: '0644'
         loop:
           - check.service
@@ -89,9 +89,9 @@
           - restart check.timer
       - name: check timer are started/stopped
         systemd:
-          name: restic.{{ repo }}-check.timer
-          state: "{{ 'started' if restic_check is defined else 'stopped' }}"
-          enabled: "{{ true if restic_check is defined else false }}"
+          name: restic.{{ restic_repo }}-check.timer
+          state: "{{ 'started' if restic_check|default(false) else 'stopped' }}"
+          enabled: "{{ true if restic_check|default(false) else false }}"
     when:
       - restic_has_keep_within|default(true)
 
@@ -102,35 +102,35 @@
       mode: 00700
       owner: root
 
-  - name: write password file for repo "{{ repo }}"
+  - name: write password file for repo "{{ restic_repo }}"
     copy:
       content: "{{ password }}"
-      dest: /etc/restic.repos.d/{{ repo }}/password
+      dest: /etc/restic.repos.d/{{ restic_repo }}/password
       backup: true
       mode: 0440
       force: false
     when: password is defined
 
-  - name: create a new password for repo "{{ repo }}"
+  - name: create a new password for repo "{{ restic_repo }}"
     copy:
       content: "{{ lookup('password', '/dev/null') }}"
-      dest: /etc/restic.repos.d/{{ repo }}/password
+      dest: /etc/restic.repos.d/{{ restic_repo }}/password
       group: "{{ restic_repo_local_group|default(omit) }}"
       backup: true
       force: false
       mode: '440'
 
   # mode and ownership maybe wrong
-  - name: create a new password for repo "{{ repo }}"
+  - name: create a new password for repo "{{ restic_repo }}"
     file:
-      dest: /etc/restic.repos.d/{{ repo }}/password
+      dest: /etc/restic.repos.d/{{ restic_repo }}/password
       group: "{{ restic_repo_local_group|default(omit) }}"
       mode: '440'
 
-  - name: wrapper script is present for repo "{{ repo }}"
+  - name: wrapper script is present for repo "{{ restic_repo }}"
     template:
       src: wrapper.sh.j2
-      dest: /usr/local/bin/restic.{{ repo }}
+      dest: /usr/local/bin/restic.{{ restic_repo }}
       backup: true
       mode: 0755
       validate: bash -n %s
@@ -144,8 +144,8 @@
       path: "{{ _item }}"
       state: absent
     loop:
-    - /usr/local/bin/restic.{{ repo }}
-    - /etc/restic.repos.d/{{ repo }}
+    - /usr/local/bin/restic.{{ restic_repo }}
+    - /etc/restic.repos.d/{{ restic_repo }}
     loop_control:
       loop_var: _item
 

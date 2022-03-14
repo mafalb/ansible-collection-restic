@@ -11,9 +11,10 @@
     https_proxy: http://{{ groups['proxy_group'][0] }}:3128
   roles:
     - role: mafalb.restic.repo
-      repo: localrepo
-      url: /tmp/localrepo
+      restic_repo: localrepo
+      restic_repo_url: /tmp/localrepo
       restic_repo_local_group: bin
+
     - role: mafalb.restic.job
       job: localjob1
       repo: localrepo
@@ -35,8 +36,8 @@
         - /
 
     - role: mafalb.restic.repo
-      repo: forgetit
-      url: /tmp/forgetit
+      restic_repo: forgetit
+      restic_repo_url: /tmp/forgetit
       restic_forget:
         flags:
           keep-within: 1y
@@ -47,8 +48,8 @@
           oncalendar: daily
 
     - role: mafalb.restic.repo
-      repo: pruneit
-      url: /tmp/pruneit
+      restic_repo: pruneit
+      restic_repo_url: /tmp/pruneit
       restic_forget:
         flags:
           keep-within: 1y
@@ -61,8 +62,8 @@
           oncalendar: weekly
 
     - role: mafalb.restic.repo
-      repo: checkit
-      url: /tmp/checkit
+      restic_repo: checkit
+      restic_repo_url: /tmp/checkit
       restic_forget:
         flags:
           keep-within: 1y
@@ -80,8 +81,8 @@
           oncalendar: weekly
 
     - role: mafalb.restic.repo
-      repo: checkit2
-      url: /tmp/checkit2
+      restic_repo: checkit2
+      restic_repo_url: /tmp/checkit2
       restic_check:
         schedule:
           oncalendar: weekly

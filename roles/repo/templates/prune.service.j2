@@ -1,6 +1,6 @@
 # {{ ansible_managed }}
 [Unit]
-Description=Prune restic repo {{ repo }}
+Description=Prune restic repo {{ restic_repo }}
 ConditionACPower=true
 
 [Install]
@@ -8,4 +8,7 @@ WantedBy=multi-user.target
 
 [Service]
 Type=oneshot
-ExecStart=/usr/local/bin/restic.{{ repo }} prune {{ restic_prune.flags|default('') }}
+ExecStart=/usr/local/bin/restic.{{ restic_repo }} prune {{ restic_prune.flags|default('') }}
+{% if restic_prune.check|default(false) %}
+ExecStartPost=/usr/local/bin/restic.{{ restic_repo }} check
+{% endif %}
