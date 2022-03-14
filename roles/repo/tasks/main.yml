@@ -1,4 +1,6 @@
-# vim: set ft=yaml ts=2 expandtab:
+# Copyright (c) 2020-2022 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
 ---
 
 - name: get OS specific variables
@@ -32,6 +34,7 @@
 
   - name: systemd units for forget are present
     block:
+
       - name: systemd units are present (forget)
         template:
           src: "{{ unit }}.j2"
@@ -45,15 +48,27 @@
         notify:
           - restart forget.timer
         register: _reg_restic_repo_systemd_units
+
       - name: systemd daemon-reload
         systemd:
           daemon-reload: true
         when: _reg_restic_repo_systemd_units.results|selectattr('changed')|list
-      - name: forget timer are started/stopped
+
+      - name: forget timer is started
         systemd:
           name: restic.{{ restic_repo }}-forget.timer
-          state: "{{ 'started' if restic_forget|default(false) else 'stopped' }}"
-          enabled: "{{ true if restic_forget|default(false) else false }}"
+          state: started
+          enabled: true
+        when:
+          - restic_forget is defined
+          - restic_forget.schedule.oncalendar != 'never'
+
+      - name: forget timer is stopped
+        systemd:
+          name: restic.{{ restic_repo }}-forget.timer
+          state: stopped
+          enabled: false
+        when: (restic_forget.schedule.oncalendar|default('never') == 'never')
 
       - name: systemd units are present (prune)
         template:
@@ -68,11 +83,22 @@
         notify:
           - systemd daemon-reload
           - restart prune.timer
-      - name: prune timer are started/stopped
+
+      - name: prune timer is started
         systemd:
           name: restic.{{ restic_repo }}-prune.timer
-          state: "{{ 'started' if restic_prune|default(false) else 'stopped' }}"
-          enabled: "{{ true if restic_forget|default(false) else false }}"
+          state: started
+          enabled: true
+        when:
+          - restic_prune is defined
+          - restic_prune.schedule.oncalendar != 'never'
+
+      - name: prune timer is stopped
+        systemd:
+          name: restic.{{ restic_repo }}-prune.timer
+          state: stopped
+          enabled: false
+        when: (restic_prune.schedule.oncalendar|default('never') == 'never')
 
       - name: systemd units are present (check)
         template:
@@ -87,11 +113,22 @@
         notify:
           - systemd daemon-reload
           - restart check.timer
-      - name: check timer are started/stopped
+
+      - name: check timer are started
         systemd:
           name: restic.{{ restic_repo }}-check.timer
-          state: "{{ 'started' if restic_check|default(false) else 'stopped' }}"
-          enabled: "{{ true if restic_check|default(false) else false }}"
+          state: started
+          enabled: true
+        when:
+          - restic_check is defined
+          - restic_check.schedule.oncalendar != 'never'
+
+      - name: check timer are stopped
+        systemd:
+          name: restic.{{ restic_repo }}-check.timer
+          state: stopped
+          enabled: false
+        when: (restic_check.schedule.oncalendar|default('never') == 'never')
     when:
       - restic_has_keep_within|default(true)
 
@@ -104,12 +141,12 @@
 
   - name: write password file for repo "{{ restic_repo }}"
     copy:
-      content: "{{ password }}"
+      content: "{{ restic_password }}"
       dest: /etc/restic.repos.d/{{ restic_repo }}/password
       backup: true
       mode: 0440
       force: false
-    when: password is defined
+    when: restic_password is defined
 
   - name: create a new password for repo "{{ restic_repo }}"
     copy:

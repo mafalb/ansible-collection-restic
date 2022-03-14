@@ -37,6 +37,13 @@ argument_specs:  # noqa 701
         type: str
         required: true
 
+      restic_repo_password:
+        description:
+          - The password of the repo.
+          - Note that this role can generate passwords in many cases.
+          - If the password can be auto generated you don't need to specify it here.
+        type: str
+
       restic_forget:
         description:
           - Install a periodic job that runs restic forget.

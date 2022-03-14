@@ -88,4 +88,18 @@
           oncalendar: weekly
           delay: 1h
 
+    - role: mafalb.restic.repo
+      restic_repo: emptydict
+      restic_repo_url: /tmp/emptydict
+      restic_forget:
+        flags:
+          dry-run:
+        schedule:
+          oncalendar: never
+      restic_prune:
+        schedule:
+          oncalendar: never
+      restic_check:
+        schedule:
+          oncalendar: never
 ...
