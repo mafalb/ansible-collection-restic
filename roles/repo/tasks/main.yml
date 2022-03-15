@@ -38,27 +38,27 @@
         when:
           - restic_forget is defined
           - restic_forget.schedule.oncalendar != 'never'
-    
+
       - name: systemd units are present (prune)
         include_tasks: units-prune-present.yml
         when:
           - restic_prune is defined
           - restic_prune.schedule.oncalendar != 'never'
-    
+
       - name: systemd units are present (check)
         include_tasks: units-check-present.yml
         when:
           - restic_check is defined
           - restic_check.schedule.oncalendar != 'never'
-    
+
       - name: systemd units are absent (forget)
         include_tasks: units-forget-absent.yml
         when: (restic_forget.schedule.oncalendar|default('never') == 'never')
-    
+
       - name: systemd units are absent (prune)
         include_tasks: units-prune-absent.yml
         when: (restic_prune.schedule.oncalendar|default('never') == 'never')
-    
+
       - name: systemd units are absent (check)
         include_tasks: units-check-absent.yml
         when: (restic_check.schedule.oncalendar|default('never') == 'never')
