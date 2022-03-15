@@ -3,7 +3,7 @@
 Description=Timer for pruning old restic backups of repo {{ restic_repo }}
 
 [Timer]
-OnCalendar=daily
+OnCalendar={{ restic_prune.schedule.oncalendar }}
 {% if restic_prune.schedule.delay is defined %}
 RandomizedDelaySec={{ restic_prune.schedule.delay }}
 {% endif %}

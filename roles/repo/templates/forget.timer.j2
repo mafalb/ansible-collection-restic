@@ -3,7 +3,7 @@
 Description=Schedule restic forget for restic repo {{ restic_repo }}
 
 [Timer]
-OnCalendar=daily
+OnCalendar={{ restic_forget.schedule.oncalendar }}
 {% if restic_forget.schedule.delay is defined %}
 RandomizedDelaySec={{ restic_forget.schedule.delay }}
 {% endif %}
