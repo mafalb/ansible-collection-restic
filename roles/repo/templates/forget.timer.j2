@@ -1,0 +1,13 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Schedule restic forget for restic repo {{ restic_repo }}
+
+[Timer]
+OnCalendar={{ restic_forget.schedule.oncalendar }}
+{% if restic_forget.schedule.delay is defined %}
+RandomizedDelaySec={{ restic_forget.schedule.delay }}
+{% endif %}
+Persistent=true
+
+[Install]
+WantedBy=timers.target

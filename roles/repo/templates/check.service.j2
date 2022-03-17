@@ -1,0 +1,12 @@
+# {{ ansible_managed }}
+[Unit]
+Description=Check restic repo {{ restic_repo }}
+ConditionACPower=true
+After=restic.{{ restic_repo }}-forget.service restic.{{ restic_repo }}-prune.service
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/restic.{{ restic_repo }} check {{ restic_check.flags|default('') }}

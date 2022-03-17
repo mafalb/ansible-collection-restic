@@ -3,10 +3,10 @@
 
 set -o noglob
 
-. /etc/restic.repos.d/{{ repo|mandatory }}/env
+. /etc/restic.repos.d/{{ restic_repo }}/env
 
 {% if restic_is_very_old|default(false)|bool %}
-/usr/bin/restic --password-file /etc/restic.repos.d/{{ repo }}/password -r {{ url|mandatory }} $@
+/usr/bin/restic --password-file /etc/restic.repos.d/{{ restic_repo }}/password -r {{ restic_repo_url }} $@
 {% else %}
-/usr/bin/restic -r {{ url|mandatory }} $@
+/usr/bin/restic -r {{ restic_repo_url }} $@
 {% endif %}

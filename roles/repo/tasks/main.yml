@@ -1,4 +1,6 @@
-# vim: set ft=yaml ts=2 expandtab:
+# Copyright (c) 2020-2022 Markus Falb <markus.falb@mafalb.at>
+# GNU General Public License v3.0+
+# see LICENSE or https://www.gnu.org/licenses/gpl-3.0.txt
 ---
 
 - name: get OS specific variables
@@ -12,13 +14,13 @@
 
 - block:
 
-  - name: create directory for repo "{{ repo|mandatory }}"
+  - name: create directory for repo "{{ restic_repo }}"
     file:
-      path: /etc/restic.repos.d/{{ repo|mandatory }}
+      path: /etc/restic.repos.d/{{ restic_repo }}
       state: directory
       mode: 0755
 
-  - name: create environment file for repo "{{ repo }}"
+  - name: create environment file for repo "{{ restic_repo }}"
     template:
       src: "{{ t.src }}"
       dest: "{{ t.dest }}"
@@ -26,32 +28,43 @@
       mode: 0644
     loop:
       - src: env.j2
-        dest: /etc/restic.repos.d/{{ repo }}/env
+        dest: /etc/restic.repos.d/{{ restic_repo }}/env
     loop_control:
       loop_var: t
 
-  - name: systemd units for forget/prune/check are present
-    block:
-      - name: systemd units are present
-        template:
-          src: "{{ unit }}.j2"
-          dest: /etc/systemd/system/restic.{{ repo }}-{{ unit }}
-          mode: '0644'
-        loop:
-          - prune.service
-          - prune.timer
-        loop_control:
-          loop_var: unit
-        notify:
-          - systemd daemon-reload
-          - restart prune.timer
+  - block:
+      - name: systemd units are present (forget)
+        include_tasks: units-forget-present.yml
+        when:
+          - restic_forget is defined
+          - restic_forget.schedule.oncalendar != 'never'
 
-      - name: prune timer is started/stopped
-        systemd:
-          name: restic.{{ repo }}-prune.timer
-          state: "{{ 'started' if restic_retention_time is defined else 'stopped' }}"
-          enabled: "{{ true if restic_retention_time is defined else false }}"
-    when: restic_has_keep_within|default(true)
+      - name: systemd units are present (prune)
+        include_tasks: units-prune-present.yml
+        when:
+          - restic_prune is defined
+          - restic_prune.schedule.oncalendar != 'never'
+
+      - name: systemd units are present (check)
+        include_tasks: units-check-present.yml
+        when:
+          - restic_check is defined
+          - restic_check.schedule.oncalendar != 'never'
+
+      - name: systemd units are absent (forget)
+        include_tasks: units-forget-absent.yml
+        when: (restic_forget.schedule.oncalendar|default('never') == 'never')
+
+      - name: systemd units are absent (prune)
+        include_tasks: units-prune-absent.yml
+        when: (restic_prune.schedule.oncalendar|default('never') == 'never')
+
+      - name: systemd units are absent (check)
+        include_tasks: units-check-absent.yml
+        when: (restic_check.schedule.oncalendar|default('never') == 'never')
+
+    when:
+      - restic_has_keep_within|default(true)
 
   - name: cachedir is present
     file:
@@ -60,35 +73,35 @@
       mode: 00700
       owner: root
 
-  - name: write password file for repo "{{ repo }}"
+  - name: write password file for repo "{{ restic_repo }}"
     copy:
-      content: "{{ password }}"
-      dest: /etc/restic.repos.d/{{ repo }}/password
+      content: "{{ restic_password }}"
+      dest: /etc/restic.repos.d/{{ restic_repo }}/password
       backup: true
       mode: 0440
       force: false
-    when: password is defined
+    when: restic_password is defined
 
-  - name: create a new password for repo "{{ repo }}"
+  - name: create a new password for repo "{{ restic_repo }}"
     copy:
       content: "{{ lookup('password', '/dev/null') }}"
-      dest: /etc/restic.repos.d/{{ repo }}/password
+      dest: /etc/restic.repos.d/{{ restic_repo }}/password
       group: "{{ restic_repo_local_group|default(omit) }}"
       backup: true
       force: false
       mode: '440'
 
   # mode and ownership maybe wrong
-  - name: create a new password for repo "{{ repo }}"
+  - name: create a new password for repo "{{ restic_repo }}"
     file:
-      dest: /etc/restic.repos.d/{{ repo }}/password
+      dest: /etc/restic.repos.d/{{ restic_repo }}/password
       group: "{{ restic_repo_local_group|default(omit) }}"
       mode: '440'
 
-  - name: wrapper script is present for repo "{{ repo }}"
+  - name: wrapper script is present for repo "{{ restic_repo }}"
     template:
       src: wrapper.sh.j2
-      dest: /usr/local/bin/restic.{{ repo }}
+      dest: /usr/local/bin/restic.{{ restic_repo }}
       backup: true
       mode: 0755
       validate: bash -n %s
@@ -102,8 +115,8 @@
       path: "{{ _item }}"
       state: absent
     loop:
-    - /usr/local/bin/restic.{{ repo }}
-    - /etc/restic.repos.d/{{ repo }}
+    - /usr/local/bin/restic.{{ restic_repo }}
+    - /etc/restic.repos.d/{{ restic_repo }}
     loop_control:
       loop_var: _item
 

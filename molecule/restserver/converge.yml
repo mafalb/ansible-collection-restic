@@ -69,8 +69,8 @@
       paths:
         - /etc
     - role: mafalb.restic.repo
-      repo: remoterestrepo1
-      url: rest:http://remoterestrepo1:testpass1@{{ groups['server_group'][0] }}:8000/remoterestrepo1
-      password: testpass1
+      restic_repo: remoterestrepo1
+      restic_repo_url: rest:http://remoterestrepo1:testpass1@{{ groups['server_group'][0] }}:8000/remoterestrepo1
+      restic_password: testpass1
 
 ...
