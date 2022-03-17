@@ -12,8 +12,6 @@
     - forget.timer
   loop_control:
     loop_var: unit
-  notify:
-    - restart forget.timer
   register: _reg_restic_repo_systemd_unit
 
 - name: systemd daemon-reload
